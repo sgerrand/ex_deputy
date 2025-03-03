@@ -24,3 +24,6 @@ deputy-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignore Expublish artefacts
+RELEASE.md
