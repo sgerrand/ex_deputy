@@ -5,13 +5,13 @@ organized by resource type.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `deputy` to your list of dependencies in `mix.exs`:
+This package can be installed by adding `deputy` to your list of dependencies in
+`mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:deputy, "~> 0.0.0-dev"}
+    {:deputy, "~> 0.1.0"}
   ]
 end
 ```
