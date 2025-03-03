@@ -21,6 +21,7 @@ defmodule Deputy.MixProject do
     [
       {:req, "~> 0.5.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:expublish, "~> 2.5", only: :dev, runtime: false},
       {:mox, "~> 1.0", only: :test}
     ]
   end
