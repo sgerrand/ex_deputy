@@ -170,6 +170,8 @@ end
 
 ## Documentation
 
-Detailed documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/deputy>.
+Detailed documentation can be found at <https://hexdocs.pm/deputy>.
+
+## License
+
+Deputy is [released under the MIT license](LICENSE).
