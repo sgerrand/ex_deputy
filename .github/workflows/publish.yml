@@ -47,8 +47,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: deps
-        key: ${{ runner.os }}-publish-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-publish-mix-
+        key: ${{ runner.os }}-publish-mix-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-publish-mix-${{ matrix.otp }}-${{ matrix.elixir }}-
 
     - name: Install deps
       run: mix deps.get
