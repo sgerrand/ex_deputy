@@ -2,7 +2,7 @@ defmodule Deputy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/sgerrand/ex_deputy"
-  @version "0.0.0-dev"
+  @version "0.0.0"
 
   def project do
     [
