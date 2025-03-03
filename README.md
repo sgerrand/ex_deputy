@@ -1,5 +1,8 @@
 # Deputy
 
+[![Hex Version](https://img.shields.io/hexpm/v/deputy.svg)](https://hex.pm/packages/deputy)
+[![Hex Docs](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/deputy/)
+
 An Elixir client for the [Deputy](https://www.deputy.com/) API,
 organized by resource type.
 
