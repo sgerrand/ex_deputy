@@ -58,7 +58,7 @@ defmodule Deputy.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => @source_url,
-        "Changelog" => "https://hexdocs.pm/humaans/changelog.html",
+        "Changelog" => "https://hexdocs.pm/deputy/changelog.html",
         "Sponsor" => "https://github.com/sponsors/sgerrand"
       },
       files: ~w(lib LICENSE mix.exs README.md)
