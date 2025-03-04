@@ -208,4 +208,60 @@ defmodule Deputy.ErrorTest do
       assert Exception.message(error) == "Rate limit exceeded."
     end
   end
+
+  describe "bang functions" do
+    test "request! raises API error" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        error = Error.from_response(%{status: 403, body: %{"message" => "Access denied"}})
+        {:error, error}
+      end)
+
+      api_error = %API{status: 403, message: "Access denied"}
+
+      assert_raise API, Exception.message(api_error), fn ->
+        Deputy.request!(client, :get, "/test/path")
+      end
+    end
+
+    test "request! raises HTTP error" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        error = Error.from_response(%{status: 503, body: "Service unavailable"})
+        {:error, error}
+      end)
+
+      assert_raise HTTP, fn ->
+        Deputy.request!(client, :get, "/test/path")
+      end
+    end
+
+    test "request! raises ValidationError" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key"
+        )
+
+      invalid_body = "not a map"
+
+      assert_raise ValidationError, fn ->
+        Deputy.request!(client, :post, "/test/path", body: invalid_body)
+      end
+    end
+  end
 end

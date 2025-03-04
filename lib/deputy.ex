@@ -24,10 +24,30 @@ defmodule Deputy do
 
   # Get locations
   {:ok, locations} = Deputy.Locations.get_locations(client)
+
+  # Error handling
+  case Deputy.Locations.get_location(client, 12345) do
+    {:ok, location} ->
+      # Process location data
+      IO.inspect(location)
+
+    {:error, %Deputy.Error.API{status: 404}} ->
+      # Handle not found error
+      IO.puts("Location not found")
+
+    {:error, %Deputy.Error.HTTP{reason: reason}} ->
+      # Handle HTTP error
+      IO.puts("HTTP error: " <> inspect(reason))
+
+    {:error, %Deputy.Error.RateLimitError{retry_after: seconds}} ->
+      # Handle rate limit
+      IO.puts("Rate limited. Try again in " <> to_string(seconds) <> " seconds")
+  end
   ```
   """
 
   alias Deputy.HTTPClient
+  alias Deputy.Error
 
   @type t :: %__MODULE__{
           base_url: String.t(),
@@ -69,8 +89,18 @@ defmodule Deputy do
   Makes a HTTP request to the Deputy API.
 
   This is used internally by the API module functions.
+
+  ## Returns
+
+  * `{:ok, response_body}` - Successful API call with response body
+  * `{:error, error}` - Error from an API call where `error` is one of:
+    * `%Deputy.Error.API{}` - API error with details from Deputy
+    * `%Deputy.Error.HTTP{}` - HTTP transport-level error
+    * `%Deputy.Error.RateLimitError{}` - Rate limit exceeded
+    * `%Deputy.Error.ParseError{}` - Failed to parse response
+    * `%Deputy.Error.ValidationError{}` - Validation of request parameters failed
   """
-  @spec request(t(), atom(), String.t(), keyword()) :: {:ok, map()} | {:error, any()}
+  @spec request(t(), atom(), String.t(), keyword()) :: {:ok, map()} | {:error, Error.t()}
   def request(%__MODULE__{} = client, method, path, opts \\ []) do
     url = client.base_url <> path
 
@@ -84,20 +114,64 @@ defmodule Deputy do
       headers: headers
     ]
 
-    # Add body if it exists
-    request_opts =
-      case Keyword.get(opts, :body) do
-        nil -> request_opts
-        body -> Keyword.put(request_opts, :json, body)
-      end
+    # Validate required parameters if provided
+    with {:ok, request_opts} <- validate_and_add_body(request_opts, opts),
+         {:ok, request_opts} <- validate_and_add_params(request_opts, opts) do
+      client.http_client.request(request_opts)
+    end
+  end
 
-    # Add query params if they exist
-    request_opts =
-      case Keyword.get(opts, :params) do
-        nil -> request_opts
-        params -> Keyword.put(request_opts, :params, params)
-      end
+  @doc """
+  Makes a HTTP request to the Deputy API.
 
-    client.http_client.request(request_opts)
+  Raises an exception if the API call returns an error.
+
+  ## Examples
+
+      # client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      # locations = Deputy.request!(client, :get, "/api/v1/resource/Company")
+  """
+  @spec request!(t(), atom(), String.t(), keyword()) :: map()
+  def request!(client, method, path, opts \\ []) do
+    case request(client, method, path, opts) do
+      {:ok, response} -> response
+      {:error, error} -> raise error
+    end
+  end
+
+  defp validate_and_add_body(request_opts, opts) do
+    case Keyword.get(opts, :body) do
+      nil ->
+        {:ok, request_opts}
+
+      body when is_map(body) or is_list(body) ->
+        {:ok, Keyword.put(request_opts, :json, body)}
+
+      _invalid ->
+        {:error,
+         %Error.ValidationError{
+           message: "Request body must be a map or list",
+           field: :body,
+           value: Keyword.get(opts, :body)
+         }}
+    end
+  end
+
+  defp validate_and_add_params(request_opts, opts) do
+    case Keyword.get(opts, :params) do
+      nil ->
+        {:ok, request_opts}
+
+      params when is_map(params) or is_list(params) ->
+        {:ok, Keyword.put(request_opts, :params, params)}
+
+      _invalid ->
+        {:error,
+         %Error.ValidationError{
+           message: "Request params must be a map or list",
+           field: :params,
+           value: Keyword.get(opts, :params)
+         }}
+    end
   end
 end
