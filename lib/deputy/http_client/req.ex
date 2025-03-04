@@ -4,6 +4,8 @@ defmodule Deputy.HTTPClient.Req do
   """
   @behaviour Deputy.HTTPClient.Behaviour
 
+  alias Deputy.Error
+
   @impl true
   def request(opts) do
     case Req.request(opts) do
@@ -11,10 +13,11 @@ defmodule Deputy.HTTPClient.Req do
         {:ok, body}
 
       {:ok, %{status: status, body: body}} ->
-        {:error, %{status: status, body: body}}
+        error = Error.from_response(%{status: status, body: body})
+        {:error, error}
 
       {:error, error} ->
-        {:error, error}
+        {:error, Error.from_response(error)}
     end
   end
 end
