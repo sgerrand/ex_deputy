@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
+## 0.2.1 - 2025-03-04
+
+### Changes
+- Fixed changelog URL in package metadata
+
+
 ## 0.2.0 - 2025-03-04
 
 ### Changes
