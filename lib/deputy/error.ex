@@ -1,9 +1,9 @@
 defmodule Deputy.Error do
   @moduledoc """
-  Defines error types for Deputy API client operations.
+  Error types for Deputy API client operations.
 
   This module provides standardized error structs for different types of errors that can occur
-  when interacting with the Deputy API, making error handling more specific and easier to manage.
+  when interacting with the Deputy API.
   """
 
   @type t ::
