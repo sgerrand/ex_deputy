@@ -119,6 +119,14 @@ defmodule Deputy.Error do
   based on the status code and response body structure.
   """
   @spec from_response(map()) :: t()
+  def from_response(%{status: 429, body: body}) do
+    %RateLimitError{
+      retry_after: get_retry_after(body),
+      limit: get_rate_limit(body),
+      remaining: get_rate_remaining(body)
+    }
+  end
+
   def from_response(%{status: status, body: body}) when status in 400..499 do
     case body do
       %{"error" => %{"code" => code, "message" => message}} ->
@@ -143,14 +151,6 @@ defmodule Deputy.Error do
           body: body
         }
     end
-  end
-
-  def from_response(%{status: 429, body: body}) do
-    %RateLimitError{
-      retry_after: get_retry_after(body),
-      limit: get_rate_limit(body),
-      remaining: get_rate_remaining(body)
-    }
   end
 
   def from_response(%{status: status, body: body}) when status >= 500 do
