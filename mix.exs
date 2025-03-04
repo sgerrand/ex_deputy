@@ -19,6 +19,7 @@ defmodule Deputy.MixProject do
 
       # Docs
       name: "Deputy",
+      source_url: @source_url,
       homepage_url: @source_url,
       docs: docs()
     ]
