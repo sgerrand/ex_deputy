@@ -2,7 +2,7 @@ defmodule DeputyTest do
   use ExUnit.Case
   doctest Deputy
 
-  import Mox
+  import Mox, only: [expect: 3, verify_on_exit!: 1]
 
   setup :verify_on_exit!
 

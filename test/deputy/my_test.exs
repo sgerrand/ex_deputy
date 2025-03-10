@@ -1,12 +1,10 @@
 defmodule Deputy.MyTest do
   use ExUnit.Case, async: true
 
-  import Mox
+  import Mox, only: [expect: 3, verify_on_exit!: 1]
 
-  # Make sure mocks are verified when the test exits
   setup :verify_on_exit!
 
-  # Create a test client for all tests
   setup do
     client =
       Deputy.new(

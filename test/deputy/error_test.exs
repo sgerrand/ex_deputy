@@ -1,12 +1,11 @@
 defmodule Deputy.ErrorTest do
   use ExUnit.Case, async: true
 
+  import Mox, only: [expect: 3, verify_on_exit!: 1]
+
   alias Deputy.Error
   alias Deputy.Error.{API, HTTP, ParseError, ValidationError, RateLimitError}
 
-  import Mox
-
-  # Make sure mocks are verified when the test exits
   setup :verify_on_exit!
 
   describe "from_response/1" do
