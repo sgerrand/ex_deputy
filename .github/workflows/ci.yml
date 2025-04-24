@@ -88,8 +88,14 @@ jobs:
     - name: Install and compile dependencies
       if: steps.cache-deps.outputs.cache-hit != 'true'
       run: mix do deps.get --only ${{ env.MIX_ENV }}, deps.compile
-    - name: Check code format
+    - name: Check that mix.lock is up to date
+      run: mix deps.get --check-locked
+      if: ${{ matrix.lint }}
+    - name: Check that files are formatted
       run: mix format --check-formatted
+      if: ${{ matrix.lint }}
+    - name: Check for unused dependencies
+      run: mix deps.unlock --check-unused
       if: ${{ matrix.lint }}
     - name: Compile code
       run: mix compile --warnings-as-errors
