@@ -7,12 +7,12 @@ defmodule Deputy.Error do
   """
 
   @type t ::
-          Deputy.Error.API.t()
-          | Deputy.Error.HTTP.t()
+          Deputy.Error.APIError.t()
+          | Deputy.Error.HTTPError.t()
           | Deputy.Error.ParseError.t()
           | Deputy.Error.ValidationError.t()
 
-  defmodule API do
+  defmodule APIError do
     @moduledoc """
     Represents an error returned by the Deputy API.
     """
@@ -33,7 +33,7 @@ defmodule Deputy.Error do
     defp code_str(code), do: ", Code: #{code}"
   end
 
-  defmodule HTTP do
+  defmodule HTTPError do
     @moduledoc """
     Represents an HTTP-level error that occurred while communicating with the Deputy API.
     """
@@ -130,7 +130,7 @@ defmodule Deputy.Error do
   def from_response(%{status: status, body: body}) when status in 400..499 do
     case body do
       %{"error" => %{"code" => code, "message" => message}} ->
-        %API{
+        %APIError{
           status: status,
           code: code,
           message: message,
@@ -138,14 +138,14 @@ defmodule Deputy.Error do
         }
 
       %{"message" => message} ->
-        %API{
+        %APIError{
           status: status,
           message: message,
           details: Map.drop(body, ["message"])
         }
 
       _ ->
-        %HTTP{
+        %HTTPError{
           reason: "Bad request",
           status: status,
           body: body
@@ -154,7 +154,7 @@ defmodule Deputy.Error do
   end
 
   def from_response(%{status: status, body: body}) when status >= 500 do
-    %HTTP{
+    %HTTPError{
       reason: "Server error",
       status: status,
       body: body
@@ -162,7 +162,7 @@ defmodule Deputy.Error do
   end
 
   def from_response(%{status: status, body: body}) do
-    %HTTP{
+    %HTTPError{
       reason: "Unexpected status code",
       status: status,
       body: body
@@ -170,7 +170,7 @@ defmodule Deputy.Error do
   end
 
   def from_response(error) do
-    %HTTP{
+    %HTTPError{
       reason: error,
       status: nil,
       body: nil
