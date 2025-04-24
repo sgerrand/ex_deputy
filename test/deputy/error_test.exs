@@ -2,7 +2,7 @@ defmodule Deputy.ErrorTest do
   use ExUnit.Case, async: true
 
   alias Deputy.Error
-  alias Deputy.Error.{API, HTTP, ParseError, ValidationError, RateLimitError}
+  alias Deputy.Error.{API, HTTP, ParseError, RateLimitError, ValidationError}
 
   import Mox
 
