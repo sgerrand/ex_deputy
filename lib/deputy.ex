@@ -46,8 +46,8 @@ defmodule Deputy do
   ```
   """
 
-  alias Deputy.HTTPClient
   alias Deputy.Error
+  alias Deputy.HTTPClient
 
   @type t :: %__MODULE__{
           base_url: String.t(),

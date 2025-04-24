@@ -2,7 +2,7 @@ defmodule Deputy.ErrorTest do
   use ExUnit.Case, async: true
 
   alias Deputy.Error
-  alias Deputy.Error.{API, HTTP, ParseError, ValidationError, RateLimitError}
+  alias Deputy.Error.{APIError, HTTPError, ParseError, RateLimitError, ValidationError}
 
   import Mox
 
@@ -24,7 +24,7 @@ defmodule Deputy.ErrorTest do
 
       error = Error.from_response(response)
 
-      assert %API{} = error
+      assert %APIError{} = error
       assert error.status == 400
       assert error.code == "invalid_parameter"
       assert error.message == "Invalid parameter value"
@@ -42,7 +42,7 @@ defmodule Deputy.ErrorTest do
 
       error = Error.from_response(response)
 
-      assert %API{} = error
+      assert %APIError{} = error
       assert error.status == 404
       assert error.code == nil
       assert error.message == "Resource not found"
@@ -57,7 +57,7 @@ defmodule Deputy.ErrorTest do
 
       error = Error.from_response(response)
 
-      assert %HTTP{} = error
+      assert %HTTPError{} = error
       assert error.status == 400
       assert error.reason == "Bad request"
       assert error.body == "Bad request format"
@@ -107,7 +107,7 @@ defmodule Deputy.ErrorTest do
 
       error = Error.from_response(response)
 
-      assert %HTTP{} = error
+      assert %HTTPError{} = error
       assert error.status == 500
       assert error.reason == "Server error"
       assert error.body == %{"message" => "Internal server error"}
@@ -116,7 +116,7 @@ defmodule Deputy.ErrorTest do
     test "creates an HTTP error for unexpected errors" do
       error = Error.from_response(:timeout)
 
-      assert %HTTP{} = error
+      assert %HTTPError{} = error
       assert error.status == nil
       assert error.reason == :timeout
       assert error.body == nil
@@ -125,7 +125,7 @@ defmodule Deputy.ErrorTest do
 
   describe "error structs formatting" do
     test "API error message formatting" do
-      error = %API{
+      error = %APIError{
         status: 403,
         code: "forbidden",
         message: "You don't have permission to access this resource"
@@ -136,7 +136,7 @@ defmodule Deputy.ErrorTest do
     end
 
     test "API error message formatting without code" do
-      error = %API{
+      error = %APIError{
         status: 404,
         message: "Resource not found"
       }
@@ -145,7 +145,7 @@ defmodule Deputy.ErrorTest do
     end
 
     test "HTTP error message formatting with status" do
-      error = %HTTP{
+      error = %HTTPError{
         reason: "connection_failed",
         status: 503
       }
@@ -154,7 +154,7 @@ defmodule Deputy.ErrorTest do
     end
 
     test "HTTP error message formatting without status" do
-      error = %HTTP{
+      error = %HTTPError{
         reason: :timeout
       }
 
@@ -224,9 +224,9 @@ defmodule Deputy.ErrorTest do
         {:error, error}
       end)
 
-      api_error = %API{status: 403, message: "Access denied"}
+      api_error = %APIError{status: 403, message: "Access denied"}
 
-      assert_raise API, Exception.message(api_error), fn ->
+      assert_raise APIError, Exception.message(api_error), fn ->
         Deputy.request!(client, :get, "/test/path")
       end
     end
@@ -245,7 +245,7 @@ defmodule Deputy.ErrorTest do
         {:error, error}
       end)
 
-      assert_raise HTTP, fn ->
+      assert_raise HTTPError, fn ->
         Deputy.request!(client, :get, "/test/path")
       end
     end
