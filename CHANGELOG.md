@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- %% CHANGELOG_ENTRIES %% -->
 
+## 0.3.0 - 2025-04-24
+
+### Changes
+- Renamed exception modules for consistency
+
+
 ## 0.2.1 - 2025-03-04
 
 ### Changes
