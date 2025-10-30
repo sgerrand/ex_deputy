@@ -57,12 +57,20 @@ jobs:
       fail-fast: false
       matrix:
         elixir: ['1.15', '1.16', '1.17', '1.18', '1.19']
-        otp: ['25', '26', '27']
+        otp: ['25', '26', '27', '28']
         exclude:
           - elixir: '1.15'
             otp: '27'
+          - elixir: '1.15'
+            otp: '28'
           - elixir: '1.16'
             otp: '27'
+          - elixir: '1.16'
+            otp: '28'
+          - elixir: '1.17'
+            otp: '28'
+          - elixir: '1.18'
+            otp: '28'
           - elixir: '1.19'
             otp: '25'
         include:
