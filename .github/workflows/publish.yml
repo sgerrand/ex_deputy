@@ -43,7 +43,7 @@ jobs:
         version-type: 'strict'
 
     - name: Restore dependencies cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: deps
         key: ${{ runner.os }}-publish-mix-${{ steps.setup-beam.outputs.otp-version }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
