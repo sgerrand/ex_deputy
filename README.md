@@ -305,6 +305,30 @@ test "list employees error handling" do
 end
 ```
 
+## Development
+
+### Requirements
+
+- Elixir 1.19 / Erlang OTP 28.1 — managed via `asdf` (see `.tool-versions`)
+
+### Setup
+
+```shell
+bin/setup   # installs tooling (actionlint, lefthook, markdownlint) and git hooks
+mix setup   # installs Elixir dependencies
+```
+
+### Commands
+
+| Task | Command |
+| ---- | ------- |
+| Run all tests | `mix test` |
+| Run a single test | `mix test path/to/test_file.exs:line_number` |
+| Run a test file | `mix test path/to/test_file.exs` |
+| Format code | `mix format` |
+| Lint | `mix credo` |
+| Generate docs | `mix docs` |
+
 ## Documentation
 
 Detailed documentation can be found at <https://hexdocs.pm/deputy>.
