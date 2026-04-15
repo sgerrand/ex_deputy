@@ -27,3 +27,7 @@ deputy-*.tar
 
 # Ignore Expublish artefacts
 RELEASE.md
+
+# Ignore local configuration for coding agents.
+/.claude/
+/.codex/
