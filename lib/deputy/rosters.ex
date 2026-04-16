@@ -4,6 +4,7 @@ defmodule Deputy.Rosters do
   """
 
   alias Deputy
+  alias Deputy.Error.ValidationError
 
   @doc """
   Get a list of rosters from the last 12 hours and forward 36 hours.
@@ -172,7 +173,11 @@ defmodule Deputy.Rosters do
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/supervise/roster/create", body: attrs)
+    required = [:intEmployeeId, :intCompanyId, :dtmStartTime, :dtmEndTime]
+
+    with :ok <- validate_required_fields(attrs, required) do
+      Deputy.request(client, :post, "/api/v1/supervise/roster/create", body: attrs)
+    end
   end
 
   @doc """
@@ -286,4 +291,24 @@ defmodule Deputy.Rosters do
   @spec get_recommendations!(Deputy.t(), integer()) :: list(map())
   def get_recommendations!(client, id),
     do: Deputy.request!(client, :get, "/api/v1/supervise/getRecommendation/#{id}")
+
+  defp validate_required_fields(attrs, required_fields) do
+    missing =
+      Enum.filter(required_fields, fn field ->
+        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
+      end)
+
+    case missing do
+      [] ->
+        :ok
+
+      [field | _] ->
+        {:error,
+         %ValidationError{
+           message: "missing required field: #{field}",
+           field: field,
+           value: nil
+         }}
+    end
+  end
 end

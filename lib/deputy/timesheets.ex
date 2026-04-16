@@ -4,6 +4,7 @@ defmodule Deputy.Timesheets do
   """
 
   alias Deputy
+  alias Deputy.Error.ValidationError
 
   @doc """
   Start an employee's timesheet (clock on).
@@ -34,7 +35,11 @@ defmodule Deputy.Timesheets do
   """
   @spec start(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def start(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/supervise/timesheet/start", body: attrs)
+    required = [:intEmployeeId, :intCompanyId]
+
+    with :ok <- validate_required_fields(attrs, required) do
+      Deputy.request(client, :post, "/api/v1/supervise/timesheet/start", body: attrs)
+    end
   end
 
   @doc """
@@ -183,4 +188,24 @@ defmodule Deputy.Timesheets do
 
   def query!(client, id, query) when is_integer(id) and is_map(query),
     do: Deputy.request!(client, :post, "/api/v1/resource/Timesheet/#{id}", body: query)
+
+  defp validate_required_fields(attrs, required_fields) do
+    missing =
+      Enum.filter(required_fields, fn field ->
+        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
+      end)
+
+    case missing do
+      [] ->
+        :ok
+
+      [field | _] ->
+        {:error,
+         %ValidationError{
+           message: "missing required field: #{field}",
+           field: field,
+           value: nil
+         }}
+    end
+  end
 end

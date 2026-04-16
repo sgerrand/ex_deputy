@@ -41,6 +41,20 @@ defmodule Deputy.TimesheetsTest do
 
       assert {:ok, ^response_body} = Deputy.Timesheets.start(client, attrs)
     end
+
+    test "returns validation error when intEmployeeId is missing", %{client: client} do
+      attrs = %{intCompanyId: 2}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :intEmployeeId}} =
+               Deputy.Timesheets.start(client, attrs)
+    end
+
+    test "returns validation error when intCompanyId is missing", %{client: client} do
+      attrs = %{intEmployeeId: 1}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :intCompanyId}} =
+               Deputy.Timesheets.start(client, attrs)
+    end
   end
 
   describe "stop/2" do

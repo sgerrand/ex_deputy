@@ -175,6 +175,24 @@ defmodule Deputy.RostersTest do
 
       assert {:ok, ^response_body} = Deputy.Rosters.create(client, attrs)
     end
+
+    test "returns validation error when intEmployeeId is missing", %{client: client} do
+      attrs = %{
+        intCompanyId: 3,
+        dtmStartTime: "2023-01-01 09:00:00",
+        dtmEndTime: "2023-01-01 17:00:00"
+      }
+
+      assert {:error, %Deputy.Error.ValidationError{field: :intEmployeeId}} =
+               Deputy.Rosters.create(client, attrs)
+    end
+
+    test "returns validation error when dtmStartTime is missing", %{client: client} do
+      attrs = %{intEmployeeId: 1, intCompanyId: 3, dtmEndTime: "2023-01-01 17:00:00"}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :dtmStartTime}} =
+               Deputy.Rosters.create(client, attrs)
+    end
   end
 
   describe "discard/2" do

@@ -4,6 +4,7 @@ defmodule Deputy.Departments do
   """
 
   alias Deputy
+  alias Deputy.Error.ValidationError
 
   @doc """
   Create a department (operational unit).
@@ -38,7 +39,11 @@ defmodule Deputy.Departments do
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
-    Deputy.request(client, :put, "/api/v1/supervise/department", body: attrs)
+    required = [:intCompanyId, :strOpunitName]
+
+    with :ok <- validate_required_fields(attrs, required) do
+      Deputy.request(client, :put, "/api/v1/supervise/department", body: attrs)
+    end
   end
 
   @doc """
@@ -78,7 +83,9 @@ defmodule Deputy.Departments do
   """
   @spec create_multiple(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_multiple(client, attrs) do
-    Deputy.request(client, :put, "/api/v1/supervise/department/create/", body: attrs)
+    with :ok <- validate_required_fields(attrs, [:arrArea]) do
+      Deputy.request(client, :put, "/api/v1/supervise/department/create/", body: attrs)
+    end
   end
 
   @doc """
@@ -194,4 +201,24 @@ defmodule Deputy.Departments do
   @spec query!(Deputy.t(), map()) :: list(map())
   def query!(client, query),
     do: Deputy.request!(client, :post, "/api/v1/resource/OperationalUnit/QUERY", body: query)
+
+  defp validate_required_fields(attrs, required_fields) do
+    missing =
+      Enum.filter(required_fields, fn field ->
+        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
+      end)
+
+    case missing do
+      [] ->
+        :ok
+
+      [field | _] ->
+        {:error,
+         %ValidationError{
+           message: "missing required field: #{field}",
+           field: field,
+           value: nil
+         }}
+    end
+  end
 end
