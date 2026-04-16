@@ -177,4 +177,22 @@ defmodule Deputy.DepartmentsTest do
       assert {:ok, ^response_body} = Deputy.Departments.query(client, query)
     end
   end
+
+  describe "list!/1" do
+    test "returns unwrapped list of departments", %{client: client} do
+      response_body = [%{"Id" => 1, "OpunitName" => "Sales"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/resource/OperationalUnit/"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Departments.list!(client)
+    end
+  end
 end

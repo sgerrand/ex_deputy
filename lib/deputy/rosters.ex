@@ -235,4 +235,55 @@ defmodule Deputy.Rosters do
   def get_recommendations(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/getRecommendation/#{id}")
   end
+
+  @doc "Same as `list/1` but raises on error."
+  @spec list!(Deputy.t()) :: list(map())
+  def list!(client), do: Deputy.request!(client, :get, "/api/v1/supervise/roster")
+
+  @doc "Same as `get/2` but raises on error."
+  @spec get!(Deputy.t(), integer()) :: map()
+  def get!(client, id), do: Deputy.request!(client, :get, "/api/v1/supervise/roster/#{id}")
+
+  @doc "Same as `get_by_date/2` but raises on error."
+  @spec get_by_date!(Deputy.t(), String.t()) :: list(map())
+  def get_by_date!(client, date),
+    do: Deputy.request!(client, :get, "/api/v1/supervise/roster", params: %{date: date})
+
+  @doc "Same as `get_by_date_and_location/3` but raises on error."
+  @spec get_by_date_and_location!(Deputy.t(), String.t(), integer()) :: list(map())
+  def get_by_date_and_location!(client, date, location_id),
+    do:
+      Deputy.request!(client, :get, "/api/v1/supervise/roster",
+        params: %{date: date, intCompanyId: location_id}
+      )
+
+  @doc "Same as `copy/2` but raises on error."
+  @spec copy!(Deputy.t(), map()) :: map()
+  def copy!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/copy", body: attrs)
+
+  @doc "Same as `publish/2` but raises on error."
+  @spec publish!(Deputy.t(), map()) :: map()
+  def publish!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/publish", body: attrs)
+
+  @doc "Same as `create/2` but raises on error."
+  @spec create!(Deputy.t(), map()) :: map()
+  def create!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/create", body: attrs)
+
+  @doc "Same as `discard/2` but raises on error."
+  @spec discard!(Deputy.t(), map()) :: map()
+  def discard!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/discard", body: attrs)
+
+  @doc "Same as `get_available_for_swap/1` but raises on error."
+  @spec get_available_for_swap!(Deputy.t()) :: list(map())
+  def get_available_for_swap!(client),
+    do: Deputy.request!(client, :get, "/api/v1/supervise/roster/autobuild")
+
+  @doc "Same as `get_recommendations/2` but raises on error."
+  @spec get_recommendations!(Deputy.t(), integer()) :: list(map())
+  def get_recommendations!(client, id),
+    do: Deputy.request!(client, :get, "/api/v1/supervise/getRecommendation/#{id}")
 end

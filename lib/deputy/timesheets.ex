@@ -150,4 +150,37 @@ defmodule Deputy.Timesheets do
   def query(client, id, query) when is_integer(id) and is_map(query) do
     Deputy.request(client, :post, "/api/v1/resource/Timesheet/#{id}", body: query)
   end
+
+  @doc "Same as `start/2` but raises on error."
+  @spec start!(Deputy.t(), map()) :: map()
+  def start!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/timesheet/start", body: attrs)
+
+  @doc "Same as `stop/2` but raises on error."
+  @spec stop!(Deputy.t(), map()) :: map()
+  def stop!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/timesheet/end", body: attrs)
+
+  @doc "Same as `pause/2` but raises on error."
+  @spec pause!(Deputy.t(), map()) :: map()
+  def pause!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/supervise/timesheet/pause", body: attrs)
+
+  @doc "Same as `get_details/2` but raises on error."
+  @spec get_details!(Deputy.t(), integer()) :: map()
+  def get_details!(client, id),
+    do: Deputy.request!(client, :get, "/api/v1/supervise/timesheet/#{id}/details")
+
+  @doc "Same as `query/3` but raises on error."
+  @spec query!(Deputy.t(), integer() | nil, map() | nil) :: map() | list(map())
+  def query!(client, id, query \\ nil)
+
+  def query!(client, id, nil) when is_integer(id),
+    do: Deputy.request!(client, :get, "/api/v1/resource/Timesheet/#{id}")
+
+  def query!(client, nil, query) when is_map(query),
+    do: Deputy.request!(client, :post, "/api/v1/resource/Timesheet/QUERY", body: query)
+
+  def query!(client, id, query) when is_integer(id) and is_map(query),
+    do: Deputy.request!(client, :post, "/api/v1/resource/Timesheet/#{id}", body: query)
 end

@@ -241,4 +241,19 @@ defmodule Deputy.RostersTest do
       assert {:ok, ^response_body} = Deputy.Rosters.get_recommendations(client, roster_id)
     end
   end
+
+  describe "list!/1" do
+    test "returns unwrapped list of rosters", %{client: client} do
+      response_body = [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/roster"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.list!(client)
+    end
+  end
 end

@@ -74,4 +74,20 @@ defmodule Deputy.SalesTest do
       assert {:ok, ^response_body} = Deputy.Sales.get_metrics(client, params)
     end
   end
+
+  describe "get_metrics!/2" do
+    test "returns unwrapped metrics list", %{client: client} do
+      params = %{areas: "1", types: "Sales", start: "1626203567", end: "1657775576"}
+      response_body = [%{"timestamp" => 1_626_203_600, "type" => "Sales", "value" => 100.30}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v2/metrics/raw"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Sales.get_metrics!(client, params)
+    end
+  end
 end

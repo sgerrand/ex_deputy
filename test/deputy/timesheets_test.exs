@@ -169,4 +169,23 @@ defmodule Deputy.TimesheetsTest do
       assert {:ok, ^response_body} = Deputy.Timesheets.query(client, timesheet_id, query)
     end
   end
+
+  describe "start!/2" do
+    test "returns unwrapped timesheet on start", %{client: client} do
+      attrs = %{intEmployeeId: 1, intCompanyId: 2}
+      response_body = %{"Id" => 789}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/timesheet/start"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.start!(client, attrs)
+    end
+  end
 end

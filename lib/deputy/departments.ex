@@ -165,4 +165,33 @@ defmodule Deputy.Departments do
   def query(client, query) do
     Deputy.request(client, :post, "/api/v1/resource/OperationalUnit/QUERY", body: query)
   end
+
+  @doc "Same as `create/2` but raises on error."
+  @spec create!(Deputy.t(), map()) :: map()
+  def create!(client, attrs),
+    do: Deputy.request!(client, :put, "/api/v1/supervise/department", body: attrs)
+
+  @doc "Same as `create_multiple/2` but raises on error."
+  @spec create_multiple!(Deputy.t(), map()) :: map()
+  def create_multiple!(client, attrs),
+    do: Deputy.request!(client, :put, "/api/v1/supervise/department/create/", body: attrs)
+
+  @doc "Same as `list/1` but raises on error."
+  @spec list!(Deputy.t()) :: list(map())
+  def list!(client), do: Deputy.request!(client, :get, "/api/v1/resource/OperationalUnit/")
+
+  @doc "Same as `delete/2` but raises on error."
+  @spec delete!(Deputy.t(), integer()) :: map()
+  def delete!(client, id),
+    do: Deputy.request!(client, :delete, "/api/v1/resource/OperationalUnit/#{id}")
+
+  @doc "Same as `update/3` but raises on error."
+  @spec update!(Deputy.t(), integer(), map()) :: map()
+  def update!(client, id, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/resource/OperationalUnit/#{id}", body: attrs)
+
+  @doc "Same as `query/2` but raises on error."
+  @spec query!(Deputy.t(), map()) :: list(map())
+  def query!(client, query),
+    do: Deputy.request!(client, :post, "/api/v1/resource/OperationalUnit/QUERY", body: query)
 end

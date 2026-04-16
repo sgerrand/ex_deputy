@@ -129,4 +129,19 @@ defmodule Deputy.UtilityTest do
       assert {:ok, ^response_body} = Deputy.Utility.get_setup(client)
     end
   end
+
+  describe "get_time!/1" do
+    test "returns unwrapped system time", %{client: client} do
+      response_body = %{"time" => 1_672_531_200, "tz" => "UTC"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/time"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Utility.get_time!(client)
+    end
+  end
 end

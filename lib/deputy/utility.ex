@@ -133,4 +133,31 @@ defmodule Deputy.Utility do
   def get_setup(client) do
     Deputy.request(client, :get, "/api/v1/my/setup")
   end
+
+  @doc "Same as `get_time/1` but raises on error."
+  @spec get_time!(Deputy.t()) :: map()
+  def get_time!(client), do: Deputy.request!(client, :get, "/api/v1/time")
+
+  @doc "Same as `get_location_time/2` but raises on error."
+  @spec get_location_time!(Deputy.t(), integer()) :: map()
+  def get_location_time!(client, location_id),
+    do: Deputy.request!(client, :get, "/api/v1/time/#{location_id}")
+
+  @doc "Same as `create_memo/2` but raises on error."
+  @spec create_memo!(Deputy.t(), map()) :: map()
+  def create_memo!(client, attrs),
+    do: Deputy.request!(client, :put, "/api/v1/supervise/memo", body: attrs)
+
+  @doc "Same as `add_webhook/2` but raises on error."
+  @spec add_webhook!(Deputy.t(), map()) :: map()
+  def add_webhook!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/resource/Webhook", body: attrs)
+
+  @doc "Same as `who_am_i/1` but raises on error."
+  @spec who_am_i!(Deputy.t()) :: map()
+  def who_am_i!(client), do: Deputy.request!(client, :get, "/api/v1/me")
+
+  @doc "Same as `get_setup/1` but raises on error."
+  @spec get_setup!(Deputy.t()) :: map()
+  def get_setup!(client), do: Deputy.request!(client, :get, "/api/v1/my/setup")
 end
