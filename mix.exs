@@ -12,6 +12,7 @@ defmodule Deputy.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixirc_paths: elixirc_paths(Mix.env()),
+      test_coverage: [tool: ExCoveralls, test_task: "test"],
 
       # Hex
       package: package(),
@@ -23,6 +24,10 @@ defmodule Deputy.MixProject do
       homepage_url: @source_url,
       docs: docs()
     ]
+  end
+
+  def cli do
+    [preferred_envs: ["coveralls.lcov": :test]]
   end
 
   def application do
@@ -38,7 +43,8 @@ defmodule Deputy.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:expublish, "~> 2.5", only: :dev, runtime: false},
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+      {:excoveralls, "~> 0.18", only: :test}
     ]
   end
 
