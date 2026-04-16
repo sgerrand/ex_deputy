@@ -100,7 +100,7 @@ defmodule Deputy do
     * `%Deputy.Error.ParseError{}` - Failed to parse response
     * `%Deputy.Error.ValidationError{}` - Validation of request parameters failed
   """
-  @spec request(t(), atom(), String.t(), keyword()) :: {:ok, map()} | {:error, Error.t()}
+  @spec request(t(), atom(), String.t(), keyword()) :: {:ok, map() | list()} | {:error, Error.t()}
   def request(%__MODULE__{} = client, method, path, opts \\ []) do
     url = client.base_url <> path
 
@@ -131,7 +131,7 @@ defmodule Deputy do
       # client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       # locations = Deputy.request!(client, :get, "/api/v1/resource/Company")
   """
-  @spec request!(t(), atom(), String.t(), keyword()) :: map()
+  @spec request!(t(), atom(), String.t(), keyword()) :: map() | list()
   def request!(client, method, path, opts \\ []) do
     case request(client, method, path, opts) do
       {:ok, response} -> response

@@ -15,7 +15,7 @@ defmodule Deputy.My do
       {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
 
   """
-  @spec me(Deputy.t()) :: {:ok, map()} | {:error, any()}
+  @spec me(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def me(client) do
     Deputy.request(client, :get, "/api/v1/me")
   end
@@ -30,7 +30,7 @@ defmodule Deputy.My do
       {:ok, %{"locations" => [%{"Id" => 1, "Name" => "Main Office"}]}}
 
   """
-  @spec setup(Deputy.t()) :: {:ok, map()} | {:error, any()}
+  @spec setup(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def setup(client) do
     Deputy.request(client, :get, "/api/v1/my/setup")
   end
@@ -45,7 +45,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "Name" => "Main Office"}]}
 
   """
-  @spec locations(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec locations(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def locations(client) do
     Deputy.request(client, :get, "/api/v1/my/location")
   end
@@ -65,7 +65,7 @@ defmodule Deputy.My do
       {:ok, %{"Id" => 1, "Name" => "Main Office"}}
 
   """
-  @spec location(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec location(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def location(client, id) do
     Deputy.request(client, :get, "/api/v1/my/location/#{id}")
   end
@@ -80,7 +80,7 @@ defmodule Deputy.My do
       {:ok, %{"Street1" => "123 Main St", "City" => "New York"}}
 
   """
-  @spec contact_address(Deputy.t()) :: {:ok, map()} | {:error, any()}
+  @spec contact_address(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def contact_address(client) do
     Deputy.request(client, :get, "/api/v1/my/contactaddress")
   end
@@ -95,7 +95,7 @@ defmodule Deputy.My do
       {:ok, [%{"Street1" => "123 Main St", "City" => "New York"}]}
 
   """
-  @spec all_contact_addresses(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec all_contact_addresses(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def all_contact_addresses(client) do
     Deputy.request(client, :get, "/api/v1/my/contactaddress/all")
   end
@@ -135,7 +135,7 @@ defmodule Deputy.My do
       {:ok, %{"success" => true}}
 
   """
-  @spec update_contact_address(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec update_contact_address(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update_contact_address(client, attrs) do
     Deputy.request(client, :post, "/api/v1/my/contactaddress", body: attrs)
   end
@@ -150,7 +150,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 2, "FirstName" => "Jane", "LastName" => "Smith"}]}
 
   """
-  @spec colleagues(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec colleagues(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def colleagues(client) do
     Deputy.request(client, :get, "/api/v1/my/colleague")
   end
@@ -165,7 +165,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
-  @spec rosters(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec rosters(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def rosters(client) do
     Deputy.request(client, :get, "/api/v1/my/roster")
   end
@@ -180,7 +180,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "DateStart" => "2023-01-01", "DateEnd" => "2023-01-05"}]}
 
   """
-  @spec leave(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec leave(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def leave(client) do
     Deputy.request(client, :get, "/api/v1/my/leave")
   end
@@ -195,7 +195,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "Start" => %{"timestamp" => 1657001675}}]}
 
   """
-  @spec unavailability(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec unavailability(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def unavailability(client) do
     Deputy.request(client, :get, "/api/v1/my/unavail")
   end
@@ -210,7 +210,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "Message" => "You have a new roster"}]}
 
   """
-  @spec notifications(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec notifications(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def notifications(client) do
     Deputy.request(client, :get, "/api/v1/my/notification")
   end
@@ -225,7 +225,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "Name" => "Safety Training"}]}
 
   """
-  @spec training(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec training(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def training(client) do
     Deputy.request(client, :get, "/api/v1/my/training")
   end
@@ -240,7 +240,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "Content" => "Welcome to Deputy"}]}
 
   """
-  @spec memos(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec memos(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def memos(client) do
     Deputy.request(client, :get, "/api/v1/my/memo")
   end
@@ -255,7 +255,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "TaskName" => "Complete training"}]}
 
   """
-  @spec tasks(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec tasks(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def tasks(client) do
     Deputy.request(client, :get, "/api/v1/my/tasks")
   end
@@ -275,7 +275,7 @@ defmodule Deputy.My do
       {:ok, %{"success" => true}}
 
   """
-  @spec complete_task(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec complete_task(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def complete_task(client, id) do
     Deputy.request(client, :get, "/api/v1/my/tasks/#{id}/do")
   end
@@ -290,7 +290,7 @@ defmodule Deputy.My do
       {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
-  @spec timesheets(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec timesheets(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def timesheets(client) do
     Deputy.request(client, :get, "/api/v1/my/timesheets")
   end
@@ -310,7 +310,7 @@ defmodule Deputy.My do
       {:ok, %{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}}
 
   """
-  @spec timesheet_detail(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec timesheet_detail(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def timesheet_detail(client, id) do
     Deputy.request(client, :get, "/api/v1/my/timesheets/#{id}/detail")
   end

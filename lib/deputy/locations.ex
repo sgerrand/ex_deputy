@@ -258,7 +258,7 @@ defmodule Deputy.Locations do
       {:ok, %{"success" => true}}
 
   """
-  @spec archive(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec archive(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def archive(client, id) do
     Deputy.request(client, :post, "/api/v1/supervise/company/#{id}/archive")
   end
@@ -278,7 +278,7 @@ defmodule Deputy.Locations do
       {:ok, %{"success" => true}}
 
   """
-  @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def delete(client, id) do
     Deputy.request(client, :post, "/api/v1/supervise/company/#{id}/delete")
   end
@@ -318,7 +318,7 @@ defmodule Deputy.Locations do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
     Deputy.request(client, :put, "/api/v1/resource/Company", body: attrs)
   end
@@ -339,7 +339,7 @@ defmodule Deputy.Locations do
       {:ok, %{"success" => true}}
 
   """
-  @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, any()}
+  @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update(client, id, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/company/#{id}", body: attrs)
   end
@@ -385,7 +385,7 @@ defmodule Deputy.Locations do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec create_workplace(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create_workplace(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_workplace(client, attrs) do
     Deputy.request(client, :post, "/api/v1/my/setup/addNewWorkplace", body: attrs)
   end
@@ -405,7 +405,7 @@ defmodule Deputy.Locations do
       {:ok, %{"Id" => 1, "CompanyName" => "Test Company"}}
 
   """
-  @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get(client, id) do
     Deputy.request(client, :get, "/api/v1/my/location/#{id}")
   end

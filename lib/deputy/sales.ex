@@ -44,7 +44,7 @@ defmodule Deputy.Sales do
       {:ok, %{"success" => true}}
 
   """
-  @spec add_metrics(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec add_metrics(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def add_metrics(client, metrics) do
     Deputy.request(client, :post, "/api/v2/metrics", body: metrics)
   end
@@ -77,7 +77,7 @@ defmodule Deputy.Sales do
       {:ok, [%{"timestamp" => 1626203600, "area" => 1, "type" => "Sales", "value" => 100.30}]}
 
   """
-  @spec get_metrics(Deputy.t(), map()) :: {:ok, list(map())} | {:error, any()}
+  @spec get_metrics(Deputy.t(), map()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_metrics(client, params) do
     Deputy.request(client, :get, "/api/v2/metrics/raw", params: params)
   end

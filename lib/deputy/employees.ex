@@ -15,7 +15,7 @@ defmodule Deputy.Employees do
       {:ok, [%{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}]}
 
   """
-  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def list(client) do
     Deputy.request(client, :get, "/api/v1/supervise/employee")
   end
@@ -35,7 +35,7 @@ defmodule Deputy.Employees do
       {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
 
   """
-  @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/employee/#{id}")
   end
@@ -78,7 +78,7 @@ defmodule Deputy.Employees do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/employee", body: attrs)
   end
@@ -99,7 +99,7 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, any()}
+  @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update(client, id, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{id}", body: attrs)
   end
@@ -120,7 +120,8 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec add_location(Deputy.t(), integer(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec add_location(Deputy.t(), integer(), integer()) ::
+          {:ok, map()} | {:error, Deputy.Error.t()}
   def add_location(client, employee_id, company_id) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{employee_id}/assoc/#{company_id}")
   end
@@ -141,7 +142,8 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec remove_location(Deputy.t(), integer(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec remove_location(Deputy.t(), integer(), integer()) ::
+          {:ok, map()} | {:error, Deputy.Error.t()}
   def remove_location(client, employee_id, company_id) do
     Deputy.request(
       client,
@@ -165,7 +167,7 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec terminate(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec terminate(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def terminate(client, id) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{id}/terminate")
   end
@@ -185,7 +187,7 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec reactivate(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec reactivate(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def reactivate(client, id) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{id}/activate")
   end
@@ -205,7 +207,7 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def delete(client, id) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{id}/delete")
   end
@@ -225,7 +227,7 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec invite(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec invite(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def invite(client, id) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{id}/invite")
   end
@@ -251,7 +253,7 @@ defmodule Deputy.Employees do
       {:ok, %{"success" => true}}
 
   """
-  @spec set_award(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, any()}
+  @spec set_award(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def set_award(client, id, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/employee/#{id}/setAwardFromLibrary",
       body: attrs
@@ -273,7 +275,7 @@ defmodule Deputy.Employees do
       {:ok, %{"Status" => "On Shift", "RosterID" => 123}}
 
   """
-  @spec get_shift_info(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get_shift_info(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_shift_info(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/empshiftinfo/#{id}")
   end
@@ -293,7 +295,7 @@ defmodule Deputy.Employees do
       {:ok, [%{"Id" => 123, "DateStart" => "2023-01-01", "DateEnd" => "2023-01-05"}]}
 
   """
-  @spec get_leave(Deputy.t(), integer()) :: {:ok, list(map())} | {:error, any()}
+  @spec get_leave(Deputy.t(), integer()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_leave(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/leave/#{id}")
   end
@@ -330,7 +332,7 @@ defmodule Deputy.Employees do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec add_leave(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec add_leave(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def add_leave(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/leave/", body: attrs)
   end
@@ -350,7 +352,8 @@ defmodule Deputy.Employees do
       {:ok, [%{"Id" => 123, "Start" => %{"timestamp" => 1657001675}, "End" => %{"timestamp" => 1657001676}}]}
 
   """
-  @spec get_unavailability(Deputy.t(), integer()) :: {:ok, list(map())} | {:error, any()}
+  @spec get_unavailability(Deputy.t(), integer()) ::
+          {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_unavailability(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/unavail/#{id}")
   end
@@ -385,7 +388,7 @@ defmodule Deputy.Employees do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec add_unavailability(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec add_unavailability(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def add_unavailability(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/unavail/", body: attrs)
   end
@@ -410,7 +413,7 @@ defmodule Deputy.Employees do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec add_journal(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec add_journal(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def add_journal(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/journal", body: attrs)
   end
@@ -430,7 +433,7 @@ defmodule Deputy.Employees do
       {:ok, %{"AgreedHours" => 40.0}}
 
   """
-  @spec get_agreed_hours(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get_agreed_hours(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_agreed_hours(client, id) do
     Deputy.request(client, :get, "/api/management/v2/agreed_hour/#{id}")
   end

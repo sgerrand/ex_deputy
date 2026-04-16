@@ -15,7 +15,7 @@ defmodule Deputy.Rosters do
       {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
-  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def list(client) do
     Deputy.request(client, :get, "/api/v1/supervise/roster")
   end
@@ -35,7 +35,7 @@ defmodule Deputy.Rosters do
       {:ok, %{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}}
 
   """
-  @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/roster/#{id}")
   end
@@ -55,7 +55,7 @@ defmodule Deputy.Rosters do
       {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
-  @spec get_by_date(Deputy.t(), String.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec get_by_date(Deputy.t(), String.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_by_date(client, date) do
     params = %{date: date}
     Deputy.request(client, :get, "/api/v1/supervise/roster", params: params)
@@ -78,7 +78,7 @@ defmodule Deputy.Rosters do
 
   """
   @spec get_by_date_and_location(Deputy.t(), String.t(), integer()) ::
-          {:ok, list(map())} | {:error, any()}
+          {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_by_date_and_location(client, date, location_id) do
     params = %{date: date, intCompanyId: location_id}
     Deputy.request(client, :get, "/api/v1/supervise/roster", params: params)
@@ -112,7 +112,7 @@ defmodule Deputy.Rosters do
       {:ok, %{"success" => true}}
 
   """
-  @spec copy(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec copy(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def copy(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/roster/copy", body: attrs)
   end
@@ -143,7 +143,7 @@ defmodule Deputy.Rosters do
       {:ok, %{"success" => true}}
 
   """
-  @spec publish(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec publish(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def publish(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/roster/publish", body: attrs)
   end
@@ -170,7 +170,7 @@ defmodule Deputy.Rosters do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/roster/create", body: attrs)
   end
@@ -195,7 +195,7 @@ defmodule Deputy.Rosters do
       {:ok, %{"success" => true}}
 
   """
-  @spec discard(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec discard(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def discard(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/roster/discard", body: attrs)
   end
@@ -210,7 +210,7 @@ defmodule Deputy.Rosters do
       {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
-  @spec get_available_for_swap(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec get_available_for_swap(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_available_for_swap(client) do
     Deputy.request(client, :get, "/api/v1/supervise/roster/autobuild")
   end
@@ -230,7 +230,8 @@ defmodule Deputy.Rosters do
       {:ok, [%{"EmployeeId" => 123, "Score" => 85}]}
 
   """
-  @spec get_recommendations(Deputy.t(), integer()) :: {:ok, list(map())} | {:error, any()}
+  @spec get_recommendations(Deputy.t(), integer()) ::
+          {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_recommendations(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/getRecommendation/#{id}")
   end
