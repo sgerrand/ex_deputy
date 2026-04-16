@@ -11,6 +11,7 @@ organized by resource type.
 This package can be installed by adding `deputy` to your list of dependencies in
 `mix.exs`:
 
+<!-- x-release-please-start-version -->
 ```elixir
 def deps do
   [
@@ -18,6 +19,7 @@ def deps do
   ]
 end
 ```
+<!-- x-release-please-end -->
 
 ## Getting Started
 
