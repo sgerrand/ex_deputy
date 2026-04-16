@@ -404,4 +404,34 @@ defmodule Deputy.EmployeesTest do
       assert {:ok, ^response_body} = Deputy.Employees.get_agreed_hours(client, employee_id)
     end
   end
+
+  describe "list!/1" do
+    test "returns unwrapped list of employees", %{client: client} do
+      response_body = [%{"Id" => 1, "FirstName" => "John"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/employee"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Employees.list!(client)
+    end
+  end
+
+  describe "get!/2" do
+    test "returns unwrapped employee by ID", %{client: client} do
+      response_body = %{"Id" => 1, "FirstName" => "John"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/employee/1"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Employees.get!(client, 1)
+    end
+  end
 end
