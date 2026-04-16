@@ -1,5 +1,6 @@
 defmodule Deputy.ErrorTest do
   use ExUnit.Case, async: true
+  doctest Deputy.Error
 
   alias Deputy.Error
   alias Deputy.Error.{APIError, HTTPError, ParseError, RateLimitError, ValidationError}
