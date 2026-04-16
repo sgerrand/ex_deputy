@@ -119,6 +119,14 @@ defmodule Deputy.Error do
   based on the status code and response body structure.
   """
   @spec from_response(map()) :: t()
+  def from_response(%{status: 429, body: body, headers: headers}) do
+    %RateLimitError{
+      retry_after: get_retry_after_header(headers) || get_retry_after(body),
+      limit: get_rate_limit(body),
+      remaining: get_rate_remaining(body)
+    }
+  end
+
   def from_response(%{status: 429, body: body}) do
     %RateLimitError{
       retry_after: get_retry_after(body),
@@ -176,6 +184,21 @@ defmodule Deputy.Error do
       body: nil
     }
   end
+
+  defp get_retry_after_header(headers) when is_map(headers) do
+    case Map.get(headers, "retry-after") || Map.get(headers, "Retry-After") do
+      value when is_binary(value) ->
+        case Integer.parse(value) do
+          {seconds, ""} -> seconds
+          _ -> nil
+        end
+
+      _ ->
+        nil
+    end
+  end
+
+  defp get_retry_after_header(_), do: nil
 
   defp get_retry_after(body) do
     case body do
