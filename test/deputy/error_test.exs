@@ -81,6 +81,32 @@ defmodule Deputy.ErrorTest do
       assert error.remaining == 0
     end
 
+    test "creates a RateLimitError for 429 status with Retry-After header" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: %{"retry-after" => "45"}
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{} = error
+      assert error.retry_after == 45
+    end
+
+    test "prefers Retry-After header over body field when both present" do
+      response = %{
+        status: 429,
+        body: %{"retry_after" => 60},
+        headers: %{"retry-after" => "30"}
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{} = error
+      assert error.retry_after == 30
+    end
+
     test "creates a RateLimitError for 429 status with camelCase" do
       response = %{
         status: 429,

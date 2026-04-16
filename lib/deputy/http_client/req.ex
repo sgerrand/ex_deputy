@@ -12,8 +12,8 @@ defmodule Deputy.HTTPClient.Req do
       {:ok, %{status: status, body: body}} when status in 200..299 ->
         {:ok, body}
 
-      {:ok, %{status: status, body: body}} ->
-        error = Error.from_response(%{status: status, body: body})
+      {:ok, %{status: status, body: body, headers: headers}} ->
+        error = Error.from_response(%{status: status, body: body, headers: headers})
         {:error, error}
 
       {:error, error} ->
