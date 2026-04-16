@@ -82,6 +82,27 @@ defmodule Deputy.EmployeesTest do
 
       assert {:ok, ^response_body} = Deputy.Employees.create(client, attrs)
     end
+
+    test "returns validation error when strFirstName is missing", %{client: client} do
+      attrs = %{strLastName: "Doe", intCompanyId: 1}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :strFirstName}} =
+               Deputy.Employees.create(client, attrs)
+    end
+
+    test "returns validation error when strLastName is missing", %{client: client} do
+      attrs = %{strFirstName: "John", intCompanyId: 1}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :strLastName}} =
+               Deputy.Employees.create(client, attrs)
+    end
+
+    test "returns validation error when intCompanyId is missing", %{client: client} do
+      attrs = %{strFirstName: "John", strLastName: "Doe"}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :intCompanyId}} =
+               Deputy.Employees.create(client, attrs)
+    end
   end
 
   describe "update/3" do

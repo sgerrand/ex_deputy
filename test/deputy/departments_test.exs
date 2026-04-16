@@ -40,6 +40,20 @@ defmodule Deputy.DepartmentsTest do
 
       assert {:ok, ^response_body} = Deputy.Departments.create(client, attrs)
     end
+
+    test "returns validation error when intCompanyId is missing", %{client: client} do
+      attrs = %{strOpunitName: "Sales"}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :intCompanyId}} =
+               Deputy.Departments.create(client, attrs)
+    end
+
+    test "returns validation error when strOpunitName is missing", %{client: client} do
+      attrs = %{intCompanyId: 1}
+
+      assert {:error, %Deputy.Error.ValidationError{field: :strOpunitName}} =
+               Deputy.Departments.create(client, attrs)
+    end
   end
 
   describe "create_multiple/2" do

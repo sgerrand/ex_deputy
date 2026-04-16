@@ -4,6 +4,7 @@ defmodule Deputy.Employees do
   """
 
   alias Deputy
+  alias Deputy.Error.ValidationError
 
   @doc """
   Get all employees.
@@ -80,7 +81,11 @@ defmodule Deputy.Employees do
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/supervise/employee", body: attrs)
+    required = [:strFirstName, :strLastName, :intCompanyId]
+
+    with :ok <- validate_required_fields(attrs, required) do
+      Deputy.request(client, :post, "/api/v1/supervise/employee", body: attrs)
+    end
   end
 
   @doc """
@@ -538,4 +543,24 @@ defmodule Deputy.Employees do
   @spec get_agreed_hours!(Deputy.t(), integer()) :: map()
   def get_agreed_hours!(client, id),
     do: Deputy.request!(client, :get, "/api/management/v2/agreed_hour/#{id}")
+
+  defp validate_required_fields(attrs, required_fields) do
+    missing =
+      Enum.filter(required_fields, fn field ->
+        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
+      end)
+
+    case missing do
+      [] ->
+        :ok
+
+      [field | _] ->
+        {:error,
+         %ValidationError{
+           message: "missing required field: #{field}",
+           field: field,
+           value: nil
+         }}
+    end
+  end
 end
