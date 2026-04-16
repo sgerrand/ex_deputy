@@ -19,10 +19,10 @@ defmodule Deputy.HTTPClient.Req do
 
     result =
       case Req.request(opts) do
-        {:ok, %{status: status, body: body, headers: headers}} when status in 200..299 ->
+        {:ok, %{status: status, body: body}} when status in 200..299 ->
           {:ok, body}
 
-        {:ok, %{status: status, body: body}} ->
+        {:ok, %{status: status, body: body, headers: headers}} ->
           error = Error.from_response(%{status: status, body: body, headers: headers})
           {:error, error}
 

@@ -44,6 +44,37 @@ defmodule Deputy do
       IO.puts("Rate limited. Try again in " <> to_string(seconds) <> " seconds")
   end
   ```
+
+  ## Telemetry
+
+  Deputy emits the following `:telemetry` events for every API request made via `Deputy.HTTPClient.Req`:
+
+  ### `[:deputy, :request, :start]`
+
+  Emitted before the HTTP request is sent.
+
+  | measurements | type | description |
+  |---|---|---|
+  | `system_time` | `integer` | Current system time in native units (`System.system_time/0`) |
+
+  | metadata | type | description |
+  |---|---|---|
+  | `method` | `atom` | HTTP method (e.g. `:get`, `:post`) |
+  | `url` | `String.t()` | Full request URL |
+
+  ### `[:deputy, :request, :stop]`
+
+  Emitted after the HTTP response is received and classified.
+
+  | measurements | type | description |
+  |---|---|---|
+  | `duration` | `integer` | Elapsed time in native units (use `System.convert_time_unit/3` to convert) |
+
+  | metadata | type | description |
+  |---|---|---|
+  | `method` | `atom` | HTTP method |
+  | `url` | `String.t()` | Full request URL |
+  | `status` | `atom \| integer` | `:ok` for 2xx responses, HTTP status integer for API errors, `:error` for transport errors |
   """
 
   alias Deputy.Error
