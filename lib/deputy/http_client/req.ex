@@ -8,16 +8,43 @@ defmodule Deputy.HTTPClient.Req do
 
   @impl true
   def request(opts) do
-    case Req.request(opts) do
-      {:ok, %{status: status, body: body}} when status in 200..299 ->
-        {:ok, body}
+    method = Keyword.get(opts, :method)
+    url = Keyword.get(opts, :url)
+    start_time = System.monotonic_time()
 
-      {:ok, %{status: status, body: body, headers: headers}} ->
-        error = Error.from_response(%{status: status, body: body, headers: headers})
-        {:error, error}
+    :telemetry.execute([:deputy, :request, :start], %{system_time: System.system_time()}, %{
+      method: method,
+      url: url
+    })
 
-      {:error, error} ->
-        {:error, Error.from_response(error)}
-    end
+    result =
+      case Req.request(opts) do
+        {:ok, %{status: status, body: body, headers: headers}} when status in 200..299 ->
+          {:ok, body}
+
+        {:ok, %{status: status, body: body}} ->
+          error = Error.from_response(%{status: status, body: body, headers: headers})
+          {:error, error}
+
+        {:error, error} ->
+          {:error, Error.from_response(error)}
+      end
+
+    duration = System.monotonic_time() - start_time
+
+    status =
+      case result do
+        {:ok, _} -> :ok
+        {:error, %{status: s}} when not is_nil(s) -> s
+        {:error, _} -> :error
+      end
+
+    :telemetry.execute([:deputy, :request, :stop], %{duration: duration}, %{
+      method: method,
+      url: url,
+      status: status
+    })
+
+    result
   end
 end
