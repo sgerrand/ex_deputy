@@ -1,5 +1,7 @@
 # Deputy
 
+[![Build Status](https://github.com/sgerrand/ex_deputy/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sgerrand/ex_deputy/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/sgerrand/ex_deputy/badge.svg?branch=main)](https://coveralls.io/github/sgerrand/ex_deputy?branch=main)
 [![Hex Version](https://img.shields.io/hexpm/v/deputy.svg)](https://hex.pm/packages/deputy)
 [![Hex Docs](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/deputy/)
 
