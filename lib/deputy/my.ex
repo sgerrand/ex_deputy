@@ -314,4 +314,80 @@ defmodule Deputy.My do
   def timesheet_detail(client, id) do
     Deputy.request(client, :get, "/api/v1/my/timesheets/#{id}/detail")
   end
+
+  @doc "Same as `me/1` but raises on error."
+  @spec me!(Deputy.t()) :: map()
+  def me!(client), do: Deputy.request!(client, :get, "/api/v1/me")
+
+  @doc "Same as `setup/1` but raises on error."
+  @spec setup!(Deputy.t()) :: map()
+  def setup!(client), do: Deputy.request!(client, :get, "/api/v1/my/setup")
+
+  @doc "Same as `locations/1` but raises on error."
+  @spec locations!(Deputy.t()) :: list(map())
+  def locations!(client), do: Deputy.request!(client, :get, "/api/v1/my/location")
+
+  @doc "Same as `location/2` but raises on error."
+  @spec location!(Deputy.t(), integer()) :: map()
+  def location!(client, id), do: Deputy.request!(client, :get, "/api/v1/my/location/#{id}")
+
+  @doc "Same as `contact_address/1` but raises on error."
+  @spec contact_address!(Deputy.t()) :: map()
+  def contact_address!(client), do: Deputy.request!(client, :get, "/api/v1/my/contactaddress")
+
+  @doc "Same as `all_contact_addresses/1` but raises on error."
+  @spec all_contact_addresses!(Deputy.t()) :: list(map())
+  def all_contact_addresses!(client),
+    do: Deputy.request!(client, :get, "/api/v1/my/contactaddress/all")
+
+  @doc "Same as `update_contact_address/2` but raises on error."
+  @spec update_contact_address!(Deputy.t(), map()) :: map()
+  def update_contact_address!(client, attrs),
+    do: Deputy.request!(client, :post, "/api/v1/my/contactaddress", body: attrs)
+
+  @doc "Same as `colleagues/1` but raises on error."
+  @spec colleagues!(Deputy.t()) :: list(map())
+  def colleagues!(client), do: Deputy.request!(client, :get, "/api/v1/my/colleague")
+
+  @doc "Same as `rosters/1` but raises on error."
+  @spec rosters!(Deputy.t()) :: list(map())
+  def rosters!(client), do: Deputy.request!(client, :get, "/api/v1/my/roster")
+
+  @doc "Same as `leave/1` but raises on error."
+  @spec leave!(Deputy.t()) :: list(map())
+  def leave!(client), do: Deputy.request!(client, :get, "/api/v1/my/leave")
+
+  @doc "Same as `unavailability/1` but raises on error."
+  @spec unavailability!(Deputy.t()) :: list(map())
+  def unavailability!(client), do: Deputy.request!(client, :get, "/api/v1/my/unavail")
+
+  @doc "Same as `notifications/1` but raises on error."
+  @spec notifications!(Deputy.t()) :: list(map())
+  def notifications!(client), do: Deputy.request!(client, :get, "/api/v1/my/notification")
+
+  @doc "Same as `training/1` but raises on error."
+  @spec training!(Deputy.t()) :: list(map())
+  def training!(client), do: Deputy.request!(client, :get, "/api/v1/my/training")
+
+  @doc "Same as `memos/1` but raises on error."
+  @spec memos!(Deputy.t()) :: list(map())
+  def memos!(client), do: Deputy.request!(client, :get, "/api/v1/my/memo")
+
+  @doc "Same as `tasks/1` but raises on error."
+  @spec tasks!(Deputy.t()) :: list(map())
+  def tasks!(client), do: Deputy.request!(client, :get, "/api/v1/my/tasks")
+
+  @doc "Same as `complete_task/2` but raises on error."
+  @spec complete_task!(Deputy.t(), integer()) :: map()
+  def complete_task!(client, id),
+    do: Deputy.request!(client, :get, "/api/v1/my/tasks/#{id}/do")
+
+  @doc "Same as `timesheets/1` but raises on error."
+  @spec timesheets!(Deputy.t()) :: list(map())
+  def timesheets!(client), do: Deputy.request!(client, :get, "/api/v1/my/timesheets")
+
+  @doc "Same as `timesheet_detail/2` but raises on error."
+  @spec timesheet_detail!(Deputy.t(), integer()) :: map()
+  def timesheet_detail!(client, id),
+    do: Deputy.request!(client, :get, "/api/v1/my/timesheets/#{id}/detail")
 end

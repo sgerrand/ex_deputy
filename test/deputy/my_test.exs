@@ -326,4 +326,19 @@ defmodule Deputy.MyTest do
       assert {:ok, ^response_body} = Deputy.My.timesheet_detail(client, timesheet_id)
     end
   end
+
+  describe "me!/1" do
+    test "returns unwrapped authenticated user info", %{client: client} do
+      response_body = %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/me"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.me!(client)
+    end
+  end
 end
