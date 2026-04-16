@@ -195,4 +195,39 @@ defmodule Deputy.DepartmentsTest do
       assert ^response_body = Deputy.Departments.list!(client)
     end
   end
+
+  describe "error handling" do
+    test "returns API error for 404 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error,
+         Deputy.Error.from_response(%{
+           status: 404,
+           body: %{"message" => "Department not found"}
+         })}
+      end)
+
+      assert {:error, %Deputy.Error.APIError{status: 404, message: "Department not found"}} =
+               Deputy.Departments.delete(client, 999)
+    end
+
+    test "returns HTTP error for 500 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error, Deputy.Error.from_response(%{status: 500, body: "Internal Server Error"})}
+      end)
+
+      assert {:error, %Deputy.Error.HTTPError{status: 500}} = Deputy.Departments.list(client)
+    end
+
+    test "returns rate limit error for 429 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error, Deputy.Error.from_response(%{status: 429, body: %{"retry_after" => 60}})}
+      end)
+
+      assert {:error, %Deputy.Error.RateLimitError{retry_after: 60}} =
+               Deputy.Departments.list(client)
+    end
+  end
 end
