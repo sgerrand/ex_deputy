@@ -9,24 +9,23 @@ adheres to [Semantic Versioning](http://semver.org/).
 ## 0.3.0 - 2025-04-24
 
 ### Changes
-- Renamed exception modules for consistency
 
+- Renamed exception modules for consistency
 
 ## 0.2.1 - 2025-03-04
 
 ### Changes
-- Fixed changelog URL in package metadata
 
+- Fixed changelog URL in package metadata
 
 ## 0.2.0 - 2025-03-04
 
 ### Changes
+
 - Introduce centralised error types and handling functions.
 - Improve presentation of package documentation.
 - Update package metadata with additional links, etc.
 
-
 ## 0.1.0 - 2025-03-03
 
 Initial version. :rocket:
-
