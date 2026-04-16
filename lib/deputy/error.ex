@@ -118,6 +118,21 @@ defmodule Deputy.Error do
 
   This function analyzes the HTTP response and creates a specific error struct
   based on the status code and response body structure.
+
+  ## Examples
+
+      iex> Deputy.Error.from_response(%{status: 404, body: %{"message" => "Not found"}})
+      %Deputy.Error.APIError{status: 404, code: nil, message: "Not found", details: %{}}
+
+      iex> Deputy.Error.from_response(%{status: 429, body: %{"retry_after" => 30}})
+      %Deputy.Error.RateLimitError{retry_after: 30, limit: nil, remaining: nil}
+
+      iex> Deputy.Error.from_response(%{status: 500, body: "Server error"})
+      %Deputy.Error.HTTPError{reason: "Server error", status: 500, body: "Server error"}
+
+      iex> Deputy.Error.from_response(:timeout)
+      %Deputy.Error.HTTPError{reason: :timeout, status: nil, body: nil}
+
   """
   @spec from_response(map()) :: t()
   def from_response(%{status: 429, body: body, headers: headers}) do
