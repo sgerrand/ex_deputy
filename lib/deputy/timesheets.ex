@@ -32,7 +32,7 @@ defmodule Deputy.Timesheets do
       {:ok, %{"Id" => 789}}
 
   """
-  @spec start(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec start(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def start(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/timesheet/start", body: attrs)
   end
@@ -61,7 +61,7 @@ defmodule Deputy.Timesheets do
       {:ok, %{"success" => true}}
 
   """
-  @spec stop(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec stop(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def stop(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/timesheet/end", body: attrs)
   end
@@ -86,7 +86,7 @@ defmodule Deputy.Timesheets do
       {:ok, %{"success" => true}}
 
   """
-  @spec pause(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec pause(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def pause(client, attrs) do
     Deputy.request(client, :post, "/api/v1/supervise/timesheet/pause", body: attrs)
   end
@@ -106,7 +106,7 @@ defmodule Deputy.Timesheets do
       {:ok, %{"Id" => 123, "StartTime" => "2023-01-01T09:00:00"}}
 
   """
-  @spec get_details(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get_details(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_details(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/timesheet/#{id}/details")
   end
@@ -136,7 +136,7 @@ defmodule Deputy.Timesheets do
 
   """
   @spec query(Deputy.t(), integer() | nil, map() | nil) ::
-          {:ok, map() | list(map())} | {:error, any()}
+          {:ok, map() | list(map())} | {:error, Deputy.Error.t()}
   def query(client, id, query \\ nil)
 
   def query(client, id, nil) when is_integer(id) do

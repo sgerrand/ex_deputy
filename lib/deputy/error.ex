@@ -10,6 +10,7 @@ defmodule Deputy.Error do
           Deputy.Error.APIError.t()
           | Deputy.Error.HTTPError.t()
           | Deputy.Error.ParseError.t()
+          | Deputy.Error.RateLimitError.t()
           | Deputy.Error.ValidationError.t()
 
   defmodule APIError do

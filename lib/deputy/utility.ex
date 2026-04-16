@@ -15,7 +15,7 @@ defmodule Deputy.Utility do
       {:ok, %{"time" => 1672531200, "tz" => "UTC"}}
 
   """
-  @spec get_time(Deputy.t()) :: {:ok, map()} | {:error, any()}
+  @spec get_time(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_time(client) do
     Deputy.request(client, :get, "/api/v1/time")
   end
@@ -35,7 +35,7 @@ defmodule Deputy.Utility do
       {:ok, %{"time" => 1672531200, "tz" => "America/New_York"}}
 
   """
-  @spec get_location_time(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec get_location_time(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_location_time(client, location_id) do
     Deputy.request(client, :get, "/api/v1/time/#{location_id}")
   end
@@ -66,7 +66,7 @@ defmodule Deputy.Utility do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec create_memo(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create_memo(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_memo(client, attrs) do
     Deputy.request(client, :put, "/api/v1/supervise/memo", body: attrs)
   end
@@ -99,7 +99,7 @@ defmodule Deputy.Utility do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec add_webhook(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec add_webhook(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def add_webhook(client, attrs) do
     Deputy.request(client, :post, "/api/v1/resource/Webhook", body: attrs)
   end
@@ -114,7 +114,7 @@ defmodule Deputy.Utility do
       {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
 
   """
-  @spec who_am_i(Deputy.t()) :: {:ok, map()} | {:error, any()}
+  @spec who_am_i(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def who_am_i(client) do
     Deputy.request(client, :get, "/api/v1/me")
   end
@@ -129,7 +129,7 @@ defmodule Deputy.Utility do
       {:ok, %{"locations" => [%{"Id" => 1, "Name" => "Main Office"}]}}
 
   """
-  @spec get_setup(Deputy.t()) :: {:ok, map()} | {:error, any()}
+  @spec get_setup(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_setup(client) do
     Deputy.request(client, :get, "/api/v1/my/setup")
   end

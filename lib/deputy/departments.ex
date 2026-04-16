@@ -36,7 +36,7 @@ defmodule Deputy.Departments do
       {:ok, %{"Id" => 123}}
 
   """
-  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
     Deputy.request(client, :put, "/api/v1/supervise/department", body: attrs)
   end
@@ -76,7 +76,7 @@ defmodule Deputy.Departments do
       {:ok, %{"success" => true}}
 
   """
-  @spec create_multiple(Deputy.t(), map()) :: {:ok, map()} | {:error, any()}
+  @spec create_multiple(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_multiple(client, attrs) do
     Deputy.request(client, :put, "/api/v1/supervise/department/create/", body: attrs)
   end
@@ -91,7 +91,7 @@ defmodule Deputy.Departments do
       {:ok, [%{"Id" => 1, "OpunitName" => "Sales"}]}
 
   """
-  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, any()}
+  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def list(client) do
     Deputy.request(client, :get, "/api/v1/resource/OperationalUnit/")
   end
@@ -111,7 +111,7 @@ defmodule Deputy.Departments do
       {:ok, %{"success" => true}}
 
   """
-  @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, any()}
+  @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def delete(client, id) do
     Deputy.request(client, :delete, "/api/v1/resource/OperationalUnit/#{id}")
   end
@@ -136,7 +136,7 @@ defmodule Deputy.Departments do
       {:ok, %{"success" => true}}
 
   """
-  @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, any()}
+  @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update(client, id, attrs) do
     Deputy.request(client, :post, "/api/v1/resource/OperationalUnit/#{id}", body: attrs)
   end
@@ -161,7 +161,7 @@ defmodule Deputy.Departments do
       {:ok, [%{"Id" => 1, "Employees" => [%{"Id" => 123, "FirstName" => "John"}]}]}
 
   """
-  @spec query(Deputy.t(), map()) :: {:ok, list(map())} | {:error, any()}
+  @spec query(Deputy.t(), map()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def query(client, query) do
     Deputy.request(client, :post, "/api/v1/resource/OperationalUnit/QUERY", body: query)
   end
