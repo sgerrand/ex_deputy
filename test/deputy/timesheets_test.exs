@@ -188,4 +188,43 @@ defmodule Deputy.TimesheetsTest do
       assert ^response_body = Deputy.Timesheets.start!(client, attrs)
     end
   end
+
+  describe "error handling" do
+    test "returns API error for 422 response", %{client: client} do
+      attrs = %{intEmployeeId: 1, intCompanyId: 2}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error,
+         Deputy.Error.from_response(%{
+           status: 422,
+           body: %{"message" => "Employee is already clocked in"}
+         })}
+      end)
+
+      assert {:error,
+              %Deputy.Error.APIError{status: 422, message: "Employee is already clocked in"}} =
+               Deputy.Timesheets.start(client, attrs)
+    end
+
+    test "returns HTTP error for 500 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error, Deputy.Error.from_response(%{status: 500, body: "Internal Server Error"})}
+      end)
+
+      assert {:error, %Deputy.Error.HTTPError{status: 500}} =
+               Deputy.Timesheets.get_details(client, 1)
+    end
+
+    test "returns rate limit error for 429 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error, Deputy.Error.from_response(%{status: 429, body: %{"retry_after" => 60}})}
+      end)
+
+      assert {:error, %Deputy.Error.RateLimitError{retry_after: 60}} =
+               Deputy.Timesheets.get_details(client, 1)
+    end
+  end
 end

@@ -90,4 +90,37 @@ defmodule Deputy.SalesTest do
       assert ^response_body = Deputy.Sales.get_metrics!(client, params)
     end
   end
+
+  describe "error handling" do
+    test "returns API error for 400 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error,
+         Deputy.Error.from_response(%{status: 400, body: %{"message" => "Invalid metric data"}})}
+      end)
+
+      assert {:error, %Deputy.Error.APIError{status: 400, message: "Invalid metric data"}} =
+               Deputy.Sales.add_metrics(client, %{data: []})
+    end
+
+    test "returns HTTP error for 500 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error, Deputy.Error.from_response(%{status: 500, body: "Internal Server Error"})}
+      end)
+
+      assert {:error, %Deputy.Error.HTTPError{status: 500}} =
+               Deputy.Sales.get_metrics(client, %{})
+    end
+
+    test "returns rate limit error for 429 response", %{client: client} do
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn _opts ->
+        {:error, Deputy.Error.from_response(%{status: 429, body: %{"retry_after" => 60}})}
+      end)
+
+      assert {:error, %Deputy.Error.RateLimitError{retry_after: 60}} =
+               Deputy.Sales.get_metrics(client, %{})
+    end
+  end
 end
