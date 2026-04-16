@@ -2,7 +2,7 @@ defmodule Deputy.HTTPClient.Req do
   @moduledoc """
   HTTP client implementation using Req
   """
-  @behaviour Deputy.HTTPClient.Behaviour
+  @behaviour Deputy.HTTPClient
 
   alias Deputy.Error
 
