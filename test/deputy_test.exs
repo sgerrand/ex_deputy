@@ -106,5 +106,67 @@ defmodule DeputyTest do
 
       assert result == {:ok, %{"id" => 123}}
     end
+
+    test "returns validation error for invalid params" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      result = Deputy.request(client, :get, "/test/path", params: "invalid")
+
+      assert {:error, %Deputy.Error.ValidationError{field: :params}} = result
+    end
+
+    test "returns validation error for invalid body" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      result = Deputy.request(client, :post, "/test/path", body: "invalid")
+
+      assert {:error, %Deputy.Error.ValidationError{field: :body}} = result
+    end
+
+    test "accepts list as body" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      body = [%{name: "item1"}, %{name: "item2"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :json) == body
+        {:ok, %{"id" => 123}}
+      end)
+
+      assert {:ok, _} = Deputy.request(client, :post, "/test/path", body: body)
+    end
+
+    test "accepts list as params" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :params) == [key: "value"]
+        {:ok, []}
+      end)
+
+      assert {:ok, _} = Deputy.request(client, :get, "/test/path", params: [key: "value"])
+    end
   end
 end
