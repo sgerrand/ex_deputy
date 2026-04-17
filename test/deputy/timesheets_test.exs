@@ -203,6 +203,100 @@ defmodule Deputy.TimesheetsTest do
     end
   end
 
+  describe "stop!/2" do
+    test "returns unwrapped stop result", %{client: client} do
+      attrs = %{intTimesheetId: 123, intMealbreakMinute: 30}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/timesheet/end"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.stop!(client, attrs)
+    end
+  end
+
+  describe "pause!/2" do
+    test "returns unwrapped pause result", %{client: client} do
+      attrs = %{intTimesheetId: 123}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/timesheet/pause"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.pause!(client, attrs)
+    end
+  end
+
+  describe "get_details!/2" do
+    test "returns unwrapped timesheet details", %{client: client} do
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/timesheet/123/details"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.get_details!(client, 123)
+    end
+  end
+
+  describe "query!/3" do
+    test "returns unwrapped timesheet by ID", %{client: client} do
+      response_body = %{"Id" => 1}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/resource/Timesheet/1"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.query!(client, 1)
+    end
+
+    test "returns unwrapped query results", %{client: client} do
+      query = %{search: %{id: %{field: "Id", type: "eq", data: 1}}}
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/resource/Timesheet/QUERY"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.query!(client, nil, query)
+    end
+
+    test "returns unwrapped timesheet by ID with query", %{client: client} do
+      query = %{join: ["TimesheetObject"]}
+      response_body = %{"Id" => 1}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/resource/Timesheet/1"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Timesheets.query!(client, 1, query)
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 422 response", %{client: client} do
       attrs = %{intEmployeeId: 1, intCompanyId: 2}

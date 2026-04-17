@@ -342,6 +342,247 @@ defmodule Deputy.MyTest do
     end
   end
 
+  describe "setup!/1" do
+    test "returns unwrapped setup info", %{client: client} do
+      response_body = %{"locations" => []}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/setup"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.setup!(client)
+    end
+  end
+
+  describe "locations!/1" do
+    test "returns unwrapped locations list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/location"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.locations!(client)
+    end
+  end
+
+  describe "location!/2" do
+    test "returns unwrapped location", %{client: client} do
+      response_body = %{"Id" => 1}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/location/1"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.location!(client, 1)
+    end
+  end
+
+  describe "contact_address!/1" do
+    test "returns unwrapped contact address", %{client: client} do
+      response_body = %{"Street1" => "123 Main St"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/contactaddress"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.contact_address!(client)
+    end
+  end
+
+  describe "all_contact_addresses!/1" do
+    test "returns unwrapped all contact addresses", %{client: client} do
+      response_body = [%{"Street1" => "123 Main St"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/contactaddress/all"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.all_contact_addresses!(client)
+    end
+  end
+
+  describe "update_contact_address!/2" do
+    test "returns unwrapped update result", %{client: client} do
+      attrs = %{Street1: "456 Oak Ave"}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/contactaddress"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.update_contact_address!(client, attrs)
+    end
+  end
+
+  describe "colleagues!/1" do
+    test "returns unwrapped colleagues list", %{client: client} do
+      response_body = [%{"Id" => 2}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/colleague"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.colleagues!(client)
+    end
+  end
+
+  describe "rosters!/1" do
+    test "returns unwrapped rosters list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/roster"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.rosters!(client)
+    end
+  end
+
+  describe "leave!/1" do
+    test "returns unwrapped leave list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/leave"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.leave!(client)
+    end
+  end
+
+  describe "unavailability!/1" do
+    test "returns unwrapped unavailability list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/unavail"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.unavailability!(client)
+    end
+  end
+
+  describe "notifications!/1" do
+    test "returns unwrapped notifications list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/notification"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.notifications!(client)
+    end
+  end
+
+  describe "training!/1" do
+    test "returns unwrapped training list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/training"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.training!(client)
+    end
+  end
+
+  describe "memos!/1" do
+    test "returns unwrapped memos list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/memo"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.memos!(client)
+    end
+  end
+
+  describe "tasks!/1" do
+    test "returns unwrapped tasks list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/tasks"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.tasks!(client)
+    end
+  end
+
+  describe "complete_task!/2" do
+    test "returns unwrapped task completion result", %{client: client} do
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/tasks/1/do"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.complete_task!(client, 1)
+    end
+  end
+
+  describe "timesheets!/1" do
+    test "returns unwrapped timesheets list", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/timesheets"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.timesheets!(client)
+    end
+  end
+
+  describe "timesheet_detail!/2" do
+    test "returns unwrapped timesheet detail", %{client: client} do
+      response_body = %{"Id" => 1}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/my/timesheets/1/detail"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.My.timesheet_detail!(client, 1)
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 401 response", %{client: client} do
       Deputy.HTTPClient.Mock
