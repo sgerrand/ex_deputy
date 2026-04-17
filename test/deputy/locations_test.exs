@@ -259,6 +259,97 @@ defmodule Deputy.LocationsTest do
     end
   end
 
+  describe "list!/1" do
+    test "returns unwrapped list of locations", %{client: client} do
+      response_body = [%{"Id" => 1, "CompanyName" => "Test Company"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/resource/Company"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.list!(client)
+    end
+  end
+
+  describe "list_simplified!/1" do
+    test "returns unwrapped simplified list", %{client: client} do
+      response_body = [%{"Id" => 1, "Name" => "Test Company"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/company/simple"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.list_simplified!(client)
+    end
+  end
+
+  describe "get_settings!/2" do
+    test "returns unwrapped settings", %{client: client} do
+      location_id = 123
+      response_body = %{"WEEK_START" => 2}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :get
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/company/#{location_id}/settings"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.get_settings!(client, location_id)
+    end
+  end
+
+  describe "update_settings!/3" do
+    test "returns unwrapped update result", %{client: client} do
+      location_id = 123
+      settings = %{"WEEK_START" => 3}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/company/#{location_id}/settings"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.update_settings!(client, location_id, settings)
+    end
+  end
+
+  describe "update_all_settings!/2" do
+    test "returns unwrapped update result", %{client: client} do
+      settings = %{"WEEK_START" => 3}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/company/all/settings"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.update_all_settings!(client, settings)
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 404 response", %{client: client} do
       Deputy.HTTPClient.Mock

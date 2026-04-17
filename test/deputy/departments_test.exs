@@ -210,6 +210,99 @@ defmodule Deputy.DepartmentsTest do
     end
   end
 
+  describe "create!/2" do
+    test "returns unwrapped created department", %{client: client} do
+      attrs = %{intCompanyId: 1, strOpunitName: "Sales"}
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :put
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/department"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Departments.create!(client, attrs)
+    end
+  end
+
+  describe "create_multiple!/2" do
+    test "returns unwrapped result", %{client: client} do
+      attrs = %{arrArea: [%{intCompanyId: 1, strOpunitName: "Sales"}]}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :put
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/department/create/"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Departments.create_multiple!(client, attrs)
+    end
+  end
+
+  describe "delete!/2" do
+    test "returns unwrapped delete result", %{client: client} do
+      department_id = 123
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :delete
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/resource/OperationalUnit/#{department_id}"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Departments.delete!(client, department_id)
+    end
+  end
+
+  describe "update!/3" do
+    test "returns unwrapped update result", %{client: client} do
+      department_id = 20
+      attrs = %{intCompanyId: 12, strOpunitName: "Updated"}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/resource/OperationalUnit/#{department_id}"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Departments.update!(client, department_id, attrs)
+    end
+  end
+
+  describe "query!/2" do
+    test "returns unwrapped query results", %{client: client} do
+      query = %{search: %{id: %{field: "Id", type: "eq", data: 1}}}
+      response_body = [%{"Id" => 1, "OpunitName" => "Sales"}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :method) == :post
+
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/resource/OperationalUnit/QUERY"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Departments.query!(client, query)
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 404 response", %{client: client} do
       Deputy.HTTPClient.Mock

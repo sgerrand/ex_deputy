@@ -275,6 +275,152 @@ defmodule Deputy.RostersTest do
     end
   end
 
+  describe "get!/2" do
+    test "returns unwrapped roster by ID", %{client: client} do
+      response_body = %{"Id" => 1}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/roster/1"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.get!(client, 1)
+    end
+  end
+
+  describe "get_by_date!/2" do
+    test "returns unwrapped rosters for date", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :params) == %{date: "2023-01-01"}
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.get_by_date!(client, "2023-01-01")
+    end
+  end
+
+  describe "get_by_date_and_location!/3" do
+    test "returns unwrapped rosters for date and location", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :params) == %{date: "2023-01-01", intCompanyId: 1}
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.get_by_date_and_location!(client, "2023-01-01", 1)
+    end
+  end
+
+  describe "copy!/2" do
+    test "returns unwrapped copy result", %{client: client} do
+      attrs = %{strFromDate: "2023-01-01", strToDate: "2023-01-08", intOperationalUnitArray: [1]}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/roster/copy"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.copy!(client, attrs)
+    end
+  end
+
+  describe "publish!/2" do
+    test "returns unwrapped publish result", %{client: client} do
+      attrs = %{intMode: 1, blnAllLocationsMode: 1, intRosterArray: [1]}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/roster/publish"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.publish!(client, attrs)
+    end
+  end
+
+  describe "create!/2" do
+    test "returns unwrapped created roster", %{client: client} do
+      attrs = %{
+        intEmployeeId: 1,
+        intCompanyId: 3,
+        dtmStartTime: "2023-01-01 09:00:00",
+        dtmEndTime: "2023-01-01 17:00:00"
+      }
+
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/roster/create"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.create!(client, attrs)
+    end
+  end
+
+  describe "discard!/2" do
+    test "returns unwrapped discard result", %{client: client} do
+      attrs = %{intRosterArray: [1]}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/roster/discard"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.discard!(client, attrs)
+    end
+  end
+
+  describe "get_available_for_swap!/1" do
+    test "returns unwrapped rosters available for swap", %{client: client} do
+      response_body = [%{"Id" => 1}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/roster/autobuild"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.get_available_for_swap!(client)
+    end
+  end
+
+  describe "get_recommendations!/2" do
+    test "returns unwrapped recommendations", %{client: client} do
+      response_body = [%{"EmployeeId" => 1, "Score" => 90}]
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) ==
+                 "https://test.deputy.com/api/v1/supervise/getRecommendation/1"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Rosters.get_recommendations!(client, 1)
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 404 response", %{client: client} do
       Deputy.HTTPClient.Mock

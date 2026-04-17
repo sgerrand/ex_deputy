@@ -148,6 +148,59 @@ defmodule Deputy.ErrorTest do
       assert error.reason == :timeout
       assert error.body == nil
     end
+
+    test "creates an HTTP error for unexpected status codes like 3xx" do
+      response = %{
+        status: 301,
+        body: "Moved Permanently"
+      }
+
+      error = Error.from_response(response)
+
+      assert %HTTPError{} = error
+      assert error.status == 301
+      assert error.reason == "Unexpected status code"
+      assert error.body == "Moved Permanently"
+    end
+
+    test "returns nil retry_after when Retry-After header is not parseable" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: %{"retry-after" => "not-a-number"}
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{} = error
+      assert error.retry_after == nil
+    end
+
+    test "returns nil retry_after when Retry-After header is non-binary" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: %{"retry-after" => 45}
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{} = error
+      assert error.retry_after == nil
+    end
+
+    test "handles 429 with non-map headers gracefully" do
+      response = %{
+        status: 429,
+        body: %{"retry_after" => 60},
+        headers: []
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{} = error
+      assert error.retry_after == 60
+    end
   end
 
   describe "error structs formatting" do

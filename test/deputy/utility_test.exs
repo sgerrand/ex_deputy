@@ -145,6 +145,85 @@ defmodule Deputy.UtilityTest do
     end
   end
 
+  describe "get_location_time!/2" do
+    test "returns unwrapped location time", %{client: client} do
+      location_id = 123
+      response_body = %{"time" => 1_672_531_200, "tz" => "America/New_York"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/time/#{location_id}"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Utility.get_location_time!(client, location_id)
+    end
+  end
+
+  describe "create_memo!/2" do
+    test "returns unwrapped created memo", %{client: client} do
+      attrs = %{strContent: "Hello", intCompany: 1, blnRequireConfirm: 0}
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/memo"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Utility.create_memo!(client, attrs)
+    end
+  end
+
+  describe "add_webhook!/2" do
+    test "returns unwrapped created webhook", %{client: client} do
+      attrs = %{
+        Topic: "Timesheet.Insert",
+        Enabled: 1,
+        Type: "URL",
+        Address: "https://example.com"
+      }
+
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/resource/Webhook"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Utility.add_webhook!(client, attrs)
+    end
+  end
+
+  describe "who_am_i!/1" do
+    test "returns unwrapped user info", %{client: client} do
+      response_body = %{"Id" => 1, "FirstName" => "John"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/me"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Utility.who_am_i!(client)
+    end
+  end
+
+  describe "get_setup!/1" do
+    test "returns unwrapped setup info", %{client: client} do
+      response_body = %{"locations" => []}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/my/setup"
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Utility.get_setup!(client)
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 401 response", %{client: client} do
       Deputy.HTTPClient.Mock
