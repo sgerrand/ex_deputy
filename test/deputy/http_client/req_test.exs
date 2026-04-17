@@ -5,6 +5,10 @@ defmodule Deputy.HTTPClient.ReqTest do
   alias Deputy.HTTPClient.Req, as: HTTPClientReq
   alias Req.Test, as: ReqTest
 
+  def handle_telemetry_event(event, measurements, metadata, %{pid: pid, key: key}) do
+    send(pid, {key, event, measurements, metadata})
+  end
+
   describe "request/1" do
     test "returns ok tuple for 2xx response" do
       ReqTest.stub(DeputyReqTest2xx, fn conn ->
@@ -70,29 +74,25 @@ defmodule Deputy.HTTPClient.ReqTest do
         ReqTest.json(conn, %{})
       end)
 
-      test_pid = self()
       handler_id = "test-deputy-req-start-#{System.unique_integer()}"
 
       :telemetry.attach(
         handler_id,
         [:deputy, :request, :start],
-        fn _event, measurements, metadata, _ ->
-          send(test_pid, {:telemetry_start, measurements, metadata})
-        end,
-        nil
+        &__MODULE__.handle_telemetry_event/4,
+        %{pid: self(), key: :telemetry_start}
       )
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      opts = [
+      HTTPClientReq.request(
         method: :get,
         url: "https://test.deputy.com/api/telemetry-test",
         plug: {ReqTest, DeputyReqTestTelemetryStart}
-      ]
+      )
 
-      HTTPClientReq.request(opts)
-
-      assert_receive {:telemetry_start, %{system_time: _}, %{method: :get, url: _}}
+      assert_receive {:telemetry_start, [:deputy, :request, :start], %{system_time: _},
+                      %{method: :get, url: _}}
     end
 
     test "emits stop telemetry event with ok status for 2xx" do
@@ -100,29 +100,25 @@ defmodule Deputy.HTTPClient.ReqTest do
         ReqTest.json(conn, %{})
       end)
 
-      test_pid = self()
       handler_id = "test-deputy-req-stop-#{System.unique_integer()}"
 
       :telemetry.attach(
         handler_id,
         [:deputy, :request, :stop],
-        fn _event, measurements, metadata, _ ->
-          send(test_pid, {:telemetry_stop, measurements, metadata})
-        end,
-        nil
+        &__MODULE__.handle_telemetry_event/4,
+        %{pid: self(), key: :telemetry_stop}
       )
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      opts = [
+      HTTPClientReq.request(
         method: :get,
         url: "https://test.deputy.com/api/telemetry-test",
         plug: {ReqTest, DeputyReqTestTelemetryStop}
-      ]
+      )
 
-      HTTPClientReq.request(opts)
-
-      assert_receive {:telemetry_stop, %{duration: _}, %{method: :get, url: _, status: :ok}}
+      assert_receive {:telemetry_stop, [:deputy, :request, :stop], %{duration: _},
+                      %{method: :get, url: _, status: :ok}}
     end
 
     test "emits stop telemetry event with status code for api errors" do
@@ -131,57 +127,47 @@ defmodule Deputy.HTTPClient.ReqTest do
         ReqTest.json(conn, %{"message" => "Not found"})
       end)
 
-      test_pid = self()
       handler_id = "test-deputy-req-api-error-#{System.unique_integer()}"
 
       :telemetry.attach(
         handler_id,
         [:deputy, :request, :stop],
-        fn _event, measurements, metadata, _ ->
-          send(test_pid, {:telemetry_stop, measurements, metadata})
-        end,
-        nil
+        &__MODULE__.handle_telemetry_event/4,
+        %{pid: self(), key: :telemetry_stop}
       )
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      opts = [
+      HTTPClientReq.request(
         method: :get,
         url: "https://test.deputy.com/api/telemetry-test",
         plug: {ReqTest, DeputyReqTestTelemetryApiError}
-      ]
+      )
 
-      HTTPClientReq.request(opts)
-
-      assert_receive {:telemetry_stop, %{duration: _}, %{status: 404}}
+      assert_receive {:telemetry_stop, _, _, %{status: 404}}
     end
 
     test "emits stop telemetry event with :error status for transport errors" do
-      test_pid = self()
       handler_id = "test-deputy-req-transport-#{System.unique_integer()}"
 
       :telemetry.attach(
         handler_id,
         [:deputy, :request, :stop],
-        fn _event, measurements, metadata, _ ->
-          send(test_pid, {:telemetry_stop, measurements, metadata})
-        end,
-        nil
+        &__MODULE__.handle_telemetry_event/4,
+        %{pid: self(), key: :telemetry_stop}
       )
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      opts = [
+      HTTPClientReq.request(
         method: :get,
         url: "https://test.deputy.com/api/telemetry-test",
         adapter: fn request ->
           {request, RuntimeError.exception("connection refused")}
         end
-      ]
+      )
 
-      HTTPClientReq.request(opts)
-
-      assert_receive {:telemetry_stop, %{duration: _}, %{status: :error}}
+      assert_receive {:telemetry_stop, _, _, %{status: :error}}
     end
   end
 end
