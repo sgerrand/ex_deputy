@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file. See [Keep a
 CHANGELOG](http://keepachangelog.com/) for how to update this file. This project
 adheres to [Semantic Versioning](http://semver.org/).
 
-<!-- %% CHANGELOG_ENTRIES %% -->
-
 ## [0.4.1](https://github.com/sgerrand/ex_deputy/compare/v0.4.0...v0.4.1) (2026-04-20)
 
 
