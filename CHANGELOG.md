@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](http://semver.org/).
 
 ### Bug Fixes
 
-* **deps:** bump the elixir group with 2 updates ([#63](https://github.com/sgerrand/ex_deputy/issues/63)) ([f09519f](https://github.com/sgerrand/ex_deputy/commit/f09519fa094b31a4944741883b2fc8d9a4413791))
+* **deps:** bump credo from 1.7.17 to 1.7.18, telemetry from 1.3.0 to 1.4.1 ([#63](https://github.com/sgerrand/ex_deputy/issues/63)) ([f09519f](https://github.com/sgerrand/ex_deputy/commit/f09519fa094b31a4944741883b2fc8d9a4413791))
 
 ## [0.4.0](https://github.com/sgerrand/ex_deputy/compare/v0.3.0...v0.4.0) (2026-04-17)
 
