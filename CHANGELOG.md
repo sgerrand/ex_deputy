@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file. See [Keep a
 CHANGELOG](http://keepachangelog.com/) for how to update this file. This project
 adheres to [Semantic Versioning](http://semver.org/).
 
-<!-- %% CHANGELOG_ENTRIES %% -->
+## [0.4.1](https://github.com/sgerrand/ex_deputy/compare/v0.4.0...v0.4.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* **deps:** bump credo from 1.7.17 to 1.7.18, telemetry from 1.3.0 to 1.4.1 ([#63](https://github.com/sgerrand/ex_deputy/issues/63)) ([f09519f](https://github.com/sgerrand/ex_deputy/commit/f09519fa094b31a4944741883b2fc8d9a4413791))
 
 ## [0.4.0](https://github.com/sgerrand/ex_deputy/compare/v0.3.0...v0.4.0) (2026-04-17)
 
