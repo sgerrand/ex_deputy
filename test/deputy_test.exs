@@ -40,6 +40,43 @@ defmodule DeputyTest do
         Deputy.new(api_key: "test-key")
       end
     end
+
+    test "defaults auth_scheme to :bearer" do
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      assert client.auth_scheme == :bearer
+    end
+
+    test "accepts :oauth auth_scheme" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          auth_scheme: :oauth
+        )
+
+      assert client.auth_scheme == :oauth
+    end
+
+    test "accepts :dpauth auth_scheme" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          auth_scheme: :dpauth
+        )
+
+      assert client.auth_scheme == :dpauth
+    end
+
+    test "raises ArgumentError for unknown auth_scheme" do
+      assert_raise ArgumentError, ~r/invalid :auth_scheme/, fn ->
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          auth_scheme: :basic
+        )
+      end
+    end
   end
 
   describe "request/4" do
@@ -167,6 +204,42 @@ defmodule DeputyTest do
       end)
 
       assert {:ok, _} = Deputy.request(client, :get, "/test/path", params: [key: "value"])
+    end
+
+    test "sends OAuth scheme Authorization header" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "oauth-token",
+          http_client: Deputy.HTTPClient.Mock,
+          auth_scheme: :oauth
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :headers) == [{"Authorization", "OAuth oauth-token"}]
+        {:ok, %{}}
+      end)
+
+      assert {:ok, _} = Deputy.request(client, :get, "/test/path")
+    end
+
+    test "sends dpauth header for permanent tokens" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "perm-token",
+          http_client: Deputy.HTTPClient.Mock,
+          auth_scheme: :dpauth
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :headers) == [{"dpauth", "perm-token"}]
+        {:ok, %{}}
+      end)
+
+      assert {:ok, _} = Deputy.request(client, :get, "/test/path")
     end
   end
 end

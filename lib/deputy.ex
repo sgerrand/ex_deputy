@@ -80,13 +80,18 @@ defmodule Deputy do
   alias Deputy.Error
   alias Deputy.HTTPClient
 
+  @type auth_scheme :: :bearer | :oauth | :dpauth
+
   @type t :: %__MODULE__{
           base_url: String.t(),
           api_key: String.t(),
-          http_client: module()
+          http_client: module(),
+          auth_scheme: auth_scheme()
         }
 
-  defstruct [:base_url, :api_key, :http_client]
+  defstruct [:base_url, :api_key, :http_client, :auth_scheme]
+
+  @valid_auth_schemes [:bearer, :oauth, :dpauth]
 
   @doc """
   Creates a new Deputy client with the given configuration.
@@ -96,11 +101,18 @@ defmodule Deputy do
   * `:base_url` - Required. The base URL for the Deputy API.
   * `:api_key` - Required. The API key for authentication.
   * `:http_client` - Optional. Module implementing the HTTPClient behavior. Defaults to Deputy.HTTPClient.Req.
+  * `:auth_scheme` - Optional. How the API key is sent. One of:
+    * `:bearer` (default) - `Authorization: Bearer <key>`. Use for OAuth 2.0 access tokens.
+    * `:oauth` - `Authorization: OAuth <key>`. Use for legacy OAuth tokens.
+    * `:dpauth` - `dpauth: <key>` header. Use for Deputy permanent tokens.
 
   ## Examples
 
       iex> Deputy.new(base_url: "https://your-subdomain.deputy.com", api_key: "your-api-key")
-      %Deputy{base_url: "https://your-subdomain.deputy.com", api_key: "your-api-key", http_client: Deputy.HTTPClient.Req}
+      %Deputy{base_url: "https://your-subdomain.deputy.com", api_key: "your-api-key", http_client: Deputy.HTTPClient.Req, auth_scheme: :bearer}
+
+      iex> Deputy.new(base_url: "https://your-subdomain.deputy.com", api_key: "permanent-token", auth_scheme: :dpauth)
+      %Deputy{base_url: "https://your-subdomain.deputy.com", api_key: "permanent-token", http_client: Deputy.HTTPClient.Req, auth_scheme: :dpauth}
 
   """
   @spec new(Keyword.t()) :: t()
@@ -108,11 +120,18 @@ defmodule Deputy do
     base_url = Keyword.fetch!(opts, :base_url)
     api_key = Keyword.fetch!(opts, :api_key)
     http_client = Keyword.get(opts, :http_client, HTTPClient.Req)
+    auth_scheme = Keyword.get(opts, :auth_scheme, :bearer)
+
+    unless auth_scheme in @valid_auth_schemes do
+      raise ArgumentError,
+            "invalid :auth_scheme #{inspect(auth_scheme)}, expected one of #{inspect(@valid_auth_schemes)}"
+    end
 
     %__MODULE__{
       base_url: base_url,
       api_key: api_key,
-      http_client: http_client
+      http_client: http_client,
+      auth_scheme: auth_scheme
     }
   end
 
@@ -135,14 +154,10 @@ defmodule Deputy do
   def request(%__MODULE__{} = client, method, path, opts \\ []) do
     url = client.base_url <> path
 
-    headers = [
-      {"Authorization", "Bearer #{client.api_key}"}
-    ]
-
     request_opts = [
       method: method,
       url: url,
-      headers: headers
+      headers: auth_headers(client)
     ]
 
     # Validate required parameters if provided
@@ -169,6 +184,15 @@ defmodule Deputy do
       {:error, error} -> raise error
     end
   end
+
+  defp auth_headers(%__MODULE__{auth_scheme: :bearer, api_key: key}),
+    do: [{"Authorization", "Bearer #{key}"}]
+
+  defp auth_headers(%__MODULE__{auth_scheme: :oauth, api_key: key}),
+    do: [{"Authorization", "OAuth #{key}"}]
+
+  defp auth_headers(%__MODULE__{auth_scheme: :dpauth, api_key: key}),
+    do: [{"dpauth", key}]
 
   defp validate_and_add_body(request_opts, opts) do
     case Keyword.get(opts, :body) do
