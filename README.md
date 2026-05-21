@@ -65,8 +65,8 @@ Each module provides functions for interacting with the corresponding Deputy API
 
 All API functions return either `{:ok, result}` or `{:error, error}` tuples. The error can be one of several types:
 
-- `%Deputy.Error.API{}` - API error with details from Deputy (status, code, message)
-- `%Deputy.Error.HTTP{}` - HTTP-level error (network issues, server errors)
+- `%Deputy.Error.APIError{}` - API error with details from Deputy (status, code, message)
+- `%Deputy.Error.HTTPError{}` - HTTP-level error (network issues, server errors)
 - `%Deputy.Error.ParseError{}` - Error parsing the API response
 - `%Deputy.Error.ValidationError{}` - Request validation failed
 - `%Deputy.Error.RateLimitError{}` - Rate limit exceeded
@@ -79,11 +79,11 @@ case Deputy.Locations.get(client, 12345) do
     # Process location data
     IO.inspect(location)
 
-  {:error, %Deputy.Error.API{status: 404}} ->
+  {:error, %Deputy.Error.APIError{status: 404}} ->
     # Handle not found error
     IO.puts("Location not found")
 
-  {:error, %Deputy.Error.HTTP{reason: reason}} ->
+  {:error, %Deputy.Error.HTTPError{reason: reason}} ->
     # Handle HTTP error
     IO.puts("HTTP error: #{inspect(reason)}")
 
@@ -138,7 +138,7 @@ case Deputy.Locations.update(client, 123, %{strWorkplaceCode: "UPD"}) do
   {:ok, updated} ->
     IO.puts("Location updated successfully")
 
-  {:error, %Deputy.Error.API{status: 404}} ->
+  {:error, %Deputy.Error.APIError{status: 404}} ->
     IO.puts("Location not found")
 
   {:error, %Deputy.Error.ValidationError{message: message}} ->
@@ -184,7 +184,7 @@ try do
 rescue
   e in Deputy.Error.ValidationError ->
     IO.puts("Validation error: #{e.message}")
-  e in Deputy.Error.API ->
+  e in Deputy.Error.APIError ->
     IO.puts("API error (#{e.status}): #{e.message}")
 end
 ```
@@ -203,13 +203,13 @@ case Deputy.Timesheets.stop(client, %{intTimesheetId: 789}) do
   {:ok, result} ->
     IO.puts("Timesheet stopped successfully")
 
-  {:error, %Deputy.Error.API{status: 404}} ->
+  {:error, %Deputy.Error.APIError{status: 404}} ->
     IO.puts("Timesheet not found")
 
-  {:error, %Deputy.Error.API{status: 400, message: message}} ->
+  {:error, %Deputy.Error.APIError{status: 400, message: message}} ->
     IO.puts("Bad request: #{message}")
 
-  {:error, %Deputy.Error.HTTP{reason: reason}} ->
+  {:error, %Deputy.Error.HTTPError{reason: reason}} ->
     IO.puts("HTTP error: #{inspect(reason)}")
 end
 
@@ -235,10 +235,10 @@ case Deputy.My.rosters(client) do
   {:ok, rosters} ->
     IO.inspect(rosters)
 
-  {:error, %Deputy.Error.API{status: status, message: message}} ->
+  {:error, %Deputy.Error.APIError{status: status, message: message}} ->
     IO.puts("API error (#{status}): #{message}")
 
-  {:error, %Deputy.Error.HTTP{reason: :timeout}} ->
+  {:error, %Deputy.Error.HTTPError{reason: :timeout}} ->
     IO.puts("Request timed out, try again later")
 
   {:error, error} ->
@@ -301,11 +301,11 @@ test "list employees error handling" do
   end)
 
   # Call the function and test error handling
-  assert {:error, %Deputy.Error.API{status: 403, code: "permission_denied"}} =
+  assert {:error, %Deputy.Error.APIError{status: 403, code: "permission_denied"}} =
     Deputy.Employees.list(client)
 
   # Test bang version raises exception
-  assert_raise Deputy.Error.API, fn ->
+  assert_raise Deputy.Error.APIError, fn ->
     Deputy.Employees.list!(client)
   end
 end

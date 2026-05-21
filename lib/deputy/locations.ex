@@ -24,8 +24,8 @@ defmodule Deputy.Locations do
       iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       iex> case Deputy.Locations.list(client) do
       ...>   {:ok, locations} -> locations
-      ...>   {:error, %Deputy.Error.API{status: 403}} -> "Permission denied"
-      ...>   {:error, %Deputy.Error.HTTP{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      ...>   {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
+      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
       ...> end
   """
   @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Error.t()}
@@ -65,8 +65,8 @@ defmodule Deputy.Locations do
       iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       iex> case Deputy.Locations.list_simplified(client) do
       ...>   {:ok, locations} -> locations
-      ...>   {:error, %Deputy.Error.API{status: 403}} -> "Permission denied"
-      ...>   {:error, %Deputy.Error.HTTP{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      ...>   {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
+      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
       ...> end
   """
   @spec list_simplified(Deputy.t()) :: {:ok, list(map())} | {:error, Error.t()}
@@ -111,8 +111,8 @@ defmodule Deputy.Locations do
       iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       iex> case Deputy.Locations.get_settings(client, 1) do
       ...>   {:ok, settings} -> settings
-      ...>   {:error, %Deputy.Error.API{status: 404}} -> "Location not found"
-      ...>   {:error, %Deputy.Error.HTTP{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      ...>   {:error, %Deputy.Error.APIError{status: 404}} -> "Location not found"
+      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
       ...> end
   """
   @spec get_settings(Deputy.t(), integer()) :: {:ok, map()} | {:error, Error.t()}
@@ -162,7 +162,7 @@ defmodule Deputy.Locations do
       iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       iex> case Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2}) do
       ...>   {:ok, result} -> "Settings updated"
-      ...>   {:error, %Deputy.Error.API{message: message}} -> "API error: " <> message
+      ...>   {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
       ...>   {:error, %Deputy.Error.ValidationError{}} -> "Invalid settings data"
       ...> end
   """
@@ -214,8 +214,8 @@ defmodule Deputy.Locations do
       iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       iex> case Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2}) do
       ...>   {:ok, result} -> "Settings updated"
-      ...>   {:error, %Deputy.Error.API{message: message}} -> "API error: " <> message
-      ...>   {:error, %Deputy.Error.HTTP{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      ...>   {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
+      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
       ...> end
   """
   @spec update_settings(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Error.t()}

@@ -31,11 +31,11 @@ defmodule Deputy do
       # Process location data
       IO.inspect(location)
 
-    {:error, %Deputy.Error.API{status: 404}} ->
+    {:error, %Deputy.Error.APIError{status: 404}} ->
       # Handle not found error
       IO.puts("Location not found")
 
-    {:error, %Deputy.Error.HTTP{reason: reason}} ->
+    {:error, %Deputy.Error.HTTPError{reason: reason}} ->
       # Handle HTTP error
       IO.puts("HTTP error: " <> inspect(reason))
 
@@ -125,8 +125,8 @@ defmodule Deputy do
 
   * `{:ok, response_body}` - Successful API call with response body
   * `{:error, error}` - Error from an API call where `error` is one of:
-    * `%Deputy.Error.API{}` - API error with details from Deputy
-    * `%Deputy.Error.HTTP{}` - HTTP transport-level error
+    * `%Deputy.Error.APIError{}` - API error with details from Deputy
+    * `%Deputy.Error.HTTPError{}` - HTTP transport-level error
     * `%Deputy.Error.RateLimitError{}` - Rate limit exceeded
     * `%Deputy.Error.ParseError{}` - Failed to parse response
     * `%Deputy.Error.ValidationError{}` - Validation of request parameters failed
