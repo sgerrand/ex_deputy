@@ -12,12 +12,34 @@ permissions:
 jobs:
   required:
     name: Required
-    needs: [docs, test]
+    needs: [docs, lint-markdown, test]
     runs-on: ubuntu-latest
 
     steps:
       - name: Status of workflow jobs
         run: echo 'All jobs in this workflow have successfully run'
+
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
+    - name: Install mado
+      env:
+        MADO_VERSION: v0.3.0
+        MADO_SHA256: aad845cd23c8c0417cdf87b8376b75e131c38e1cb890124790567735306de6d7
+      run: |
+        curl -fsSL -o mado.tar.gz \
+          "https://github.com/akiomik/mado/releases/download/${MADO_VERSION}/mado-Linux-gnu-x86_64.tar.gz"
+        echo "${MADO_SHA256}  mado.tar.gz" | sha256sum -c -
+        tar -xzf mado.tar.gz
+        sudo mv mado /usr/local/bin/mado
+        rm mado.tar.gz
+    - name: Run mado
+      run: mado check .
 
   coverage:
     name: Coverage
