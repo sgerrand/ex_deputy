@@ -179,11 +179,19 @@ defmodule Deputy do
   """
   @spec request!(t(), atom(), String.t(), keyword()) :: map() | list()
   def request!(client, method, path, opts \\ []) do
-    case request(client, method, path, opts) do
-      {:ok, response} -> response
-      {:error, error} -> raise error
-    end
+    client |> request(method, path, opts) |> unwrap!()
   end
+
+  @doc """
+  Unwraps an `{:ok, value} | {:error, error}` tuple, returning the value on
+  success or raising the error on failure.
+
+  Used by resource bang functions to share the unwrap path with the
+  validated, non-bang variant so request paths cannot drift.
+  """
+  @spec unwrap!({:ok, value} | {:error, Exception.t()}) :: value when value: term()
+  def unwrap!({:ok, value}), do: value
+  def unwrap!({:error, error}), do: raise(error)
 
   defp auth_headers(%__MODULE__{auth_scheme: :bearer, api_key: key}),
     do: [{"Authorization", "Bearer #{key}"}]

@@ -4,7 +4,7 @@ defmodule Deputy.Rosters do
   """
 
   alias Deputy
-  alias Deputy.Error.ValidationError
+  alias Deputy.Validation
 
   @doc """
   Get a list of rosters from the last 12 hours and forward 36 hours.
@@ -175,7 +175,7 @@ defmodule Deputy.Rosters do
   def create(client, attrs) do
     required = [:intEmployeeId, :intCompanyId, :dtmStartTime, :dtmEndTime]
 
-    with :ok <- validate_required_fields(attrs, required) do
+    with :ok <- Validation.required_fields(attrs, required) do
       Deputy.request(client, :post, "/api/v1/supervise/roster/create", body: attrs)
     end
   end
@@ -243,72 +243,42 @@ defmodule Deputy.Rosters do
 
   @doc "Same as `list/1` but raises on error."
   @spec list!(Deputy.t()) :: list(map())
-  def list!(client), do: Deputy.request!(client, :get, "/api/v1/supervise/roster")
+  def list!(client), do: client |> list() |> Deputy.unwrap!()
 
   @doc "Same as `get/2` but raises on error."
   @spec get!(Deputy.t(), integer()) :: map()
-  def get!(client, id), do: Deputy.request!(client, :get, "/api/v1/supervise/roster/#{id}")
+  def get!(client, id), do: client |> get(id) |> Deputy.unwrap!()
 
   @doc "Same as `get_by_date/2` but raises on error."
   @spec get_by_date!(Deputy.t(), String.t()) :: list(map())
-  def get_by_date!(client, date),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/roster", params: %{date: date})
+  def get_by_date!(client, date), do: client |> get_by_date(date) |> Deputy.unwrap!()
 
   @doc "Same as `get_by_date_and_location/3` but raises on error."
   @spec get_by_date_and_location!(Deputy.t(), String.t(), integer()) :: list(map())
   def get_by_date_and_location!(client, date, location_id),
-    do:
-      Deputy.request!(client, :get, "/api/v1/supervise/roster",
-        params: %{date: date, intCompanyId: location_id}
-      )
+    do: client |> get_by_date_and_location(date, location_id) |> Deputy.unwrap!()
 
   @doc "Same as `copy/2` but raises on error."
   @spec copy!(Deputy.t(), map()) :: map()
-  def copy!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/copy", body: attrs)
+  def copy!(client, attrs), do: client |> copy(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `publish/2` but raises on error."
   @spec publish!(Deputy.t(), map()) :: map()
-  def publish!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/publish", body: attrs)
+  def publish!(client, attrs), do: client |> publish(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `create/2` but raises on error."
   @spec create!(Deputy.t(), map()) :: map()
-  def create!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/create", body: attrs)
+  def create!(client, attrs), do: client |> create(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `discard/2` but raises on error."
   @spec discard!(Deputy.t(), map()) :: map()
-  def discard!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/roster/discard", body: attrs)
+  def discard!(client, attrs), do: client |> discard(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `get_available_for_swap/1` but raises on error."
   @spec get_available_for_swap!(Deputy.t()) :: list(map())
-  def get_available_for_swap!(client),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/roster/autobuild")
+  def get_available_for_swap!(client), do: client |> get_available_for_swap() |> Deputy.unwrap!()
 
   @doc "Same as `get_recommendations/2` but raises on error."
   @spec get_recommendations!(Deputy.t(), integer()) :: list(map())
-  def get_recommendations!(client, id),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/getRecommendation/#{id}")
-
-  defp validate_required_fields(attrs, required_fields) do
-    missing =
-      Enum.filter(required_fields, fn field ->
-        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
-      end)
-
-    case missing do
-      [] ->
-        :ok
-
-      [field | _] ->
-        {:error,
-         %ValidationError{
-           message: "missing required field: #{field}",
-           field: field,
-           value: nil
-         }}
-    end
-  end
+  def get_recommendations!(client, id), do: client |> get_recommendations(id) |> Deputy.unwrap!()
 end

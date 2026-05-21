@@ -84,11 +84,9 @@ defmodule Deputy.Sales do
 
   @doc "Same as `add_metrics/2` but raises on error."
   @spec add_metrics!(Deputy.t(), map()) :: map()
-  def add_metrics!(client, metrics),
-    do: Deputy.request!(client, :post, "/api/v2/metrics", body: metrics)
+  def add_metrics!(client, metrics), do: client |> add_metrics(metrics) |> Deputy.unwrap!()
 
   @doc "Same as `get_metrics/2` but raises on error."
   @spec get_metrics!(Deputy.t(), map()) :: list(map())
-  def get_metrics!(client, params),
-    do: Deputy.request!(client, :get, "/api/v2/metrics/raw", params: params)
+  def get_metrics!(client, params), do: client |> get_metrics(params) |> Deputy.unwrap!()
 end

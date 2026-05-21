@@ -4,7 +4,7 @@ defmodule Deputy.Timesheets do
   """
 
   alias Deputy
-  alias Deputy.Error.ValidationError
+  alias Deputy.Validation
 
   @doc """
   Start an employee's timesheet (clock on).
@@ -37,7 +37,7 @@ defmodule Deputy.Timesheets do
   def start(client, attrs) do
     required = [:intEmployeeId, :intCompanyId]
 
-    with :ok <- validate_required_fields(attrs, required) do
+    with :ok <- Validation.required_fields(attrs, required) do
       Deputy.request(client, :post, "/api/v1/supervise/timesheet/start", body: attrs)
     end
   end
@@ -158,54 +158,21 @@ defmodule Deputy.Timesheets do
 
   @doc "Same as `start/2` but raises on error."
   @spec start!(Deputy.t(), map()) :: map()
-  def start!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/timesheet/start", body: attrs)
+  def start!(client, attrs), do: client |> start(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `stop/2` but raises on error."
   @spec stop!(Deputy.t(), map()) :: map()
-  def stop!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/timesheet/end", body: attrs)
+  def stop!(client, attrs), do: client |> stop(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `pause/2` but raises on error."
   @spec pause!(Deputy.t(), map()) :: map()
-  def pause!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/timesheet/pause", body: attrs)
+  def pause!(client, attrs), do: client |> pause(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `get_details/2` but raises on error."
   @spec get_details!(Deputy.t(), integer()) :: map()
-  def get_details!(client, id),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/timesheet/#{id}/details")
+  def get_details!(client, id), do: client |> get_details(id) |> Deputy.unwrap!()
 
   @doc "Same as `query/3` but raises on error."
   @spec query!(Deputy.t(), integer() | nil, map() | nil) :: map() | list(map())
-  def query!(client, id, query \\ nil)
-
-  def query!(client, id, nil) when is_integer(id),
-    do: Deputy.request!(client, :get, "/api/v1/resource/Timesheet/#{id}")
-
-  def query!(client, nil, query) when is_map(query),
-    do: Deputy.request!(client, :post, "/api/v1/resource/Timesheet/QUERY", body: query)
-
-  def query!(client, id, query) when is_integer(id) and is_map(query),
-    do: Deputy.request!(client, :post, "/api/v1/resource/Timesheet/#{id}", body: query)
-
-  defp validate_required_fields(attrs, required_fields) do
-    missing =
-      Enum.filter(required_fields, fn field ->
-        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
-      end)
-
-    case missing do
-      [] ->
-        :ok
-
-      [field | _] ->
-        {:error,
-         %ValidationError{
-           message: "missing required field: #{field}",
-           field: field,
-           value: nil
-         }}
-    end
-  end
+  def query!(client, id, query \\ nil), do: client |> query(id, query) |> Deputy.unwrap!()
 end

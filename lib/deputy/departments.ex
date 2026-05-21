@@ -4,7 +4,7 @@ defmodule Deputy.Departments do
   """
 
   alias Deputy
-  alias Deputy.Error.ValidationError
+  alias Deputy.Validation
 
   @doc """
   Create a department (operational unit).
@@ -41,7 +41,7 @@ defmodule Deputy.Departments do
   def create(client, attrs) do
     required = [:intCompanyId, :strOpunitName]
 
-    with :ok <- validate_required_fields(attrs, required) do
+    with :ok <- Validation.required_fields(attrs, required) do
       Deputy.request(client, :put, "/api/v1/supervise/department", body: attrs)
     end
   end
@@ -83,7 +83,7 @@ defmodule Deputy.Departments do
   """
   @spec create_multiple(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_multiple(client, attrs) do
-    with :ok <- validate_required_fields(attrs, [:arrArea]) do
+    with :ok <- Validation.required_fields(attrs, [:arrArea]) do
       Deputy.request(client, :put, "/api/v1/supervise/department/create/", body: attrs)
     end
   end
@@ -175,50 +175,25 @@ defmodule Deputy.Departments do
 
   @doc "Same as `create/2` but raises on error."
   @spec create!(Deputy.t(), map()) :: map()
-  def create!(client, attrs),
-    do: Deputy.request!(client, :put, "/api/v1/supervise/department", body: attrs)
+  def create!(client, attrs), do: client |> create(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `create_multiple/2` but raises on error."
   @spec create_multiple!(Deputy.t(), map()) :: map()
-  def create_multiple!(client, attrs),
-    do: Deputy.request!(client, :put, "/api/v1/supervise/department/create/", body: attrs)
+  def create_multiple!(client, attrs), do: client |> create_multiple(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `list/1` but raises on error."
   @spec list!(Deputy.t()) :: list(map())
-  def list!(client), do: Deputy.request!(client, :get, "/api/v1/resource/OperationalUnit/")
+  def list!(client), do: client |> list() |> Deputy.unwrap!()
 
   @doc "Same as `delete/2` but raises on error."
   @spec delete!(Deputy.t(), integer()) :: map()
-  def delete!(client, id),
-    do: Deputy.request!(client, :delete, "/api/v1/resource/OperationalUnit/#{id}")
+  def delete!(client, id), do: client |> delete(id) |> Deputy.unwrap!()
 
   @doc "Same as `update/3` but raises on error."
   @spec update!(Deputy.t(), integer(), map()) :: map()
-  def update!(client, id, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/resource/OperationalUnit/#{id}", body: attrs)
+  def update!(client, id, attrs), do: client |> update(id, attrs) |> Deputy.unwrap!()
 
   @doc "Same as `query/2` but raises on error."
   @spec query!(Deputy.t(), map()) :: list(map())
-  def query!(client, query),
-    do: Deputy.request!(client, :post, "/api/v1/resource/OperationalUnit/QUERY", body: query)
-
-  defp validate_required_fields(attrs, required_fields) do
-    missing =
-      Enum.filter(required_fields, fn field ->
-        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
-      end)
-
-    case missing do
-      [] ->
-        :ok
-
-      [field | _] ->
-        {:error,
-         %ValidationError{
-           message: "missing required field: #{field}",
-           field: field,
-           value: nil
-         }}
-    end
-  end
+  def query!(client, query), do: client |> query(query) |> Deputy.unwrap!()
 end

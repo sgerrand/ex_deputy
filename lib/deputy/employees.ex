@@ -4,7 +4,7 @@ defmodule Deputy.Employees do
   """
 
   alias Deputy
-  alias Deputy.Error.ValidationError
+  alias Deputy.Validation
 
   @doc """
   Get all employees.
@@ -83,7 +83,7 @@ defmodule Deputy.Employees do
   def create(client, attrs) do
     required = [:strFirstName, :strLastName, :intCompanyId]
 
-    with :ok <- validate_required_fields(attrs, required) do
+    with :ok <- Validation.required_fields(attrs, required) do
       Deputy.request(client, :post, "/api/v1/supervise/employee", body: attrs)
     end
   end
@@ -445,122 +445,76 @@ defmodule Deputy.Employees do
 
   @doc "Same as `list/1` but raises on error."
   @spec list!(Deputy.t()) :: list(map())
-  def list!(client), do: Deputy.request!(client, :get, "/api/v1/supervise/employee")
+  def list!(client), do: client |> list() |> Deputy.unwrap!()
 
   @doc "Same as `get/2` but raises on error."
   @spec get!(Deputy.t(), integer()) :: map()
-  def get!(client, id), do: Deputy.request!(client, :get, "/api/v1/supervise/employee/#{id}")
+  def get!(client, id), do: client |> get(id) |> Deputy.unwrap!()
 
   @doc "Same as `create/2` but raises on error."
   @spec create!(Deputy.t(), map()) :: map()
-  def create!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/employee", body: attrs)
+  def create!(client, attrs), do: client |> create(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `update/3` but raises on error."
   @spec update!(Deputy.t(), integer(), map()) :: map()
-  def update!(client, id, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/employee/#{id}", body: attrs)
+  def update!(client, id, attrs), do: client |> update(id, attrs) |> Deputy.unwrap!()
 
   @doc "Same as `add_location/3` but raises on error."
   @spec add_location!(Deputy.t(), integer(), integer()) :: map()
   def add_location!(client, employee_id, company_id),
-    do:
-      Deputy.request!(
-        client,
-        :post,
-        "/api/v1/supervise/employee/#{employee_id}/assoc/#{company_id}"
-      )
+    do: client |> add_location(employee_id, company_id) |> Deputy.unwrap!()
 
   @doc "Same as `remove_location/3` but raises on error."
   @spec remove_location!(Deputy.t(), integer(), integer()) :: map()
   def remove_location!(client, employee_id, company_id),
-    do:
-      Deputy.request!(
-        client,
-        :post,
-        "/api/v1/supervise/employee/#{employee_id}/unassoc/#{company_id}"
-      )
+    do: client |> remove_location(employee_id, company_id) |> Deputy.unwrap!()
 
   @doc "Same as `terminate/2` but raises on error."
   @spec terminate!(Deputy.t(), integer()) :: map()
-  def terminate!(client, id),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/employee/#{id}/terminate")
+  def terminate!(client, id), do: client |> terminate(id) |> Deputy.unwrap!()
 
   @doc "Same as `reactivate/2` but raises on error."
   @spec reactivate!(Deputy.t(), integer()) :: map()
-  def reactivate!(client, id),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/employee/#{id}/activate")
+  def reactivate!(client, id), do: client |> reactivate(id) |> Deputy.unwrap!()
 
   @doc "Same as `delete/2` but raises on error."
   @spec delete!(Deputy.t(), integer()) :: map()
-  def delete!(client, id),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/employee/#{id}/delete")
+  def delete!(client, id), do: client |> delete(id) |> Deputy.unwrap!()
 
   @doc "Same as `invite/2` but raises on error."
   @spec invite!(Deputy.t(), integer()) :: map()
-  def invite!(client, id),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/employee/#{id}/invite")
+  def invite!(client, id), do: client |> invite(id) |> Deputy.unwrap!()
 
   @doc "Same as `set_award/3` but raises on error."
   @spec set_award!(Deputy.t(), integer(), map()) :: map()
-  def set_award!(client, id, attrs),
-    do:
-      Deputy.request!(client, :post, "/api/v1/supervise/employee/#{id}/setAwardFromLibrary",
-        body: attrs
-      )
+  def set_award!(client, id, attrs), do: client |> set_award(id, attrs) |> Deputy.unwrap!()
 
   @doc "Same as `get_shift_info/2` but raises on error."
   @spec get_shift_info!(Deputy.t(), integer()) :: map()
-  def get_shift_info!(client, id),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/empshiftinfo/#{id}")
+  def get_shift_info!(client, id), do: client |> get_shift_info(id) |> Deputy.unwrap!()
 
   @doc "Same as `get_leave/2` but raises on error."
   @spec get_leave!(Deputy.t(), integer()) :: list(map())
-  def get_leave!(client, id),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/leave/#{id}")
+  def get_leave!(client, id), do: client |> get_leave(id) |> Deputy.unwrap!()
 
   @doc "Same as `add_leave/2` but raises on error."
   @spec add_leave!(Deputy.t(), map()) :: map()
-  def add_leave!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/leave/", body: attrs)
+  def add_leave!(client, attrs), do: client |> add_leave(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `get_unavailability/2` but raises on error."
   @spec get_unavailability!(Deputy.t(), integer()) :: list(map())
-  def get_unavailability!(client, id),
-    do: Deputy.request!(client, :get, "/api/v1/supervise/unavail/#{id}")
+  def get_unavailability!(client, id), do: client |> get_unavailability(id) |> Deputy.unwrap!()
 
   @doc "Same as `add_unavailability/2` but raises on error."
   @spec add_unavailability!(Deputy.t(), map()) :: map()
   def add_unavailability!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/unavail/", body: attrs)
+    do: client |> add_unavailability(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `add_journal/2` but raises on error."
   @spec add_journal!(Deputy.t(), map()) :: map()
-  def add_journal!(client, attrs),
-    do: Deputy.request!(client, :post, "/api/v1/supervise/journal", body: attrs)
+  def add_journal!(client, attrs), do: client |> add_journal(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `get_agreed_hours/2` but raises on error."
   @spec get_agreed_hours!(Deputy.t(), integer()) :: map()
-  def get_agreed_hours!(client, id),
-    do: Deputy.request!(client, :get, "/api/management/v2/agreed_hour/#{id}")
-
-  defp validate_required_fields(attrs, required_fields) do
-    missing =
-      Enum.filter(required_fields, fn field ->
-        not Map.has_key?(attrs, field) and not Map.has_key?(attrs, to_string(field))
-      end)
-
-    case missing do
-      [] ->
-        :ok
-
-      [field | _] ->
-        {:error,
-         %ValidationError{
-           message: "missing required field: #{field}",
-           field: field,
-           value: nil
-         }}
-    end
-  end
+  def get_agreed_hours!(client, id), do: client |> get_agreed_hours(id) |> Deputy.unwrap!()
 end

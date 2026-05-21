@@ -43,9 +43,7 @@ defmodule Deputy.Locations do
       [%{"Id" => 1, "CompanyName" => "Test Company"}]
   """
   @spec list!(Deputy.t()) :: list(map())
-  def list!(client) do
-    Deputy.request!(client, :get, "/api/v1/resource/Company")
-  end
+  def list!(client), do: client |> list() |> Deputy.unwrap!()
 
   @doc """
   Get a simplified list of locations.
@@ -84,9 +82,7 @@ defmodule Deputy.Locations do
       [%{"Id" => 1, "CompanyName" => "Test Company"}]
   """
   @spec list_simplified!(Deputy.t()) :: list(map())
-  def list_simplified!(client) do
-    Deputy.request!(client, :get, "/api/v1/supervise/company/simple")
-  end
+  def list_simplified!(client), do: client |> list_simplified() |> Deputy.unwrap!()
 
   @doc """
   Get a location's settings.
@@ -135,9 +131,7 @@ defmodule Deputy.Locations do
       %{"WEEK_START" => 1}
   """
   @spec get_settings!(Deputy.t(), integer()) :: map()
-  def get_settings!(client, id) do
-    Deputy.request!(client, :get, "/api/v1/supervise/company/#{id}/settings")
-  end
+  def get_settings!(client, id), do: client |> get_settings(id) |> Deputy.unwrap!()
 
   @doc """
   Modify settings for all locations.
@@ -186,9 +180,8 @@ defmodule Deputy.Locations do
       %{"success" => true}
   """
   @spec update_all_settings!(Deputy.t(), map()) :: map()
-  def update_all_settings!(client, settings) do
-    Deputy.request!(client, :post, "/api/v1/supervise/company/all/settings", body: settings)
-  end
+  def update_all_settings!(client, settings),
+    do: client |> update_all_settings(settings) |> Deputy.unwrap!()
 
   @doc """
   Modify settings for a single location.
@@ -239,9 +232,8 @@ defmodule Deputy.Locations do
       %{"success" => true}
   """
   @spec update_settings!(Deputy.t(), integer(), map()) :: map()
-  def update_settings!(client, id, settings) do
-    Deputy.request!(client, :post, "/api/v1/supervise/company/#{id}/settings", body: settings)
-  end
+  def update_settings!(client, id, settings),
+    do: client |> update_settings(id, settings) |> Deputy.unwrap!()
 
   @doc """
   Archive a location.
