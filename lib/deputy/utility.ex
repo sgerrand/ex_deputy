@@ -114,6 +114,7 @@ defmodule Deputy.Utility do
       {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
 
   """
+  @deprecated "Use Deputy.My.me/1 instead."
   @spec who_am_i(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def who_am_i(client) do
     Deputy.request(client, :get, "/api/v1/me")
@@ -129,6 +130,7 @@ defmodule Deputy.Utility do
       {:ok, %{"locations" => [%{"Id" => 1, "Name" => "Main Office"}]}}
 
   """
+  @deprecated "Use Deputy.My.setup/1 instead."
   @spec get_setup(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_setup(client) do
     Deputy.request(client, :get, "/api/v1/my/setup")
@@ -152,10 +154,12 @@ defmodule Deputy.Utility do
   def add_webhook!(client, attrs), do: client |> add_webhook(attrs) |> Deputy.unwrap!()
 
   @doc "Same as `who_am_i/1` but raises on error."
+  @deprecated "Use Deputy.My.me!/1 instead."
   @spec who_am_i!(Deputy.t()) :: map()
   def who_am_i!(client), do: client |> who_am_i() |> Deputy.unwrap!()
 
   @doc "Same as `get_setup/1` but raises on error."
+  @deprecated "Use Deputy.My.setup!/1 instead."
   @spec get_setup!(Deputy.t()) :: map()
   def get_setup!(client), do: client |> get_setup() |> Deputy.unwrap!()
 end

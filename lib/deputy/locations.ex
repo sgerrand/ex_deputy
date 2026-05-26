@@ -385,6 +385,10 @@ defmodule Deputy.Locations do
   @doc """
   Get location by ID.
 
+  This calls the `/api/v1/my/location/:id` endpoint, scoped to the
+  authenticated user's accessible locations. For that semantic, prefer
+  `Deputy.My.location/2`.
+
   ## Parameters
 
   - `client`: A Deputy client.
@@ -397,6 +401,7 @@ defmodule Deputy.Locations do
       {:ok, %{"Id" => 1, "CompanyName" => "Test Company"}}
 
   """
+  @deprecated "Use Deputy.My.location/2 instead."
   @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get(client, id) do
     Deputy.request(client, :get, "/api/v1/my/location/#{id}")
