@@ -73,7 +73,7 @@ defmodule Deputy.LocationsTest do
         {:ok, response_body}
       end)
 
-      assert {:ok, ^response_body} = Deputy.Locations.get(client, location_id)
+      assert {:ok, ^response_body} = apply(Deputy.Locations, :get, [client, location_id])
     end
   end
 
@@ -359,7 +359,7 @@ defmodule Deputy.LocationsTest do
       end)
 
       assert {:error, %Deputy.Error.APIError{status: 404, message: "Location not found"}} =
-               Deputy.Locations.get(client, 999)
+               apply(Deputy.Locations, :get, [client, 999])
     end
 
     test "returns HTTP error for 500 response", %{client: client} do

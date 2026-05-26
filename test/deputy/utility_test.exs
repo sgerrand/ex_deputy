@@ -110,7 +110,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
-      assert {:ok, ^response_body} = Deputy.Utility.who_am_i(client)
+      assert {:ok, ^response_body} = apply(Deputy.Utility, :who_am_i, [client])
     end
   end
 
@@ -126,7 +126,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
-      assert {:ok, ^response_body} = Deputy.Utility.get_setup(client)
+      assert {:ok, ^response_body} = apply(Deputy.Utility, :get_setup, [client])
     end
   end
 
@@ -206,7 +206,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
-      assert ^response_body = Deputy.Utility.who_am_i!(client)
+      assert ^response_body = apply(Deputy.Utility, :who_am_i!, [client])
     end
   end
 
@@ -220,7 +220,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
-      assert ^response_body = Deputy.Utility.get_setup!(client)
+      assert ^response_body = apply(Deputy.Utility, :get_setup!, [client])
     end
   end
 
@@ -232,7 +232,7 @@ defmodule Deputy.UtilityTest do
       end)
 
       assert {:error, %Deputy.Error.APIError{status: 401, message: "Unauthorized"}} =
-               Deputy.Utility.who_am_i(client)
+               apply(Deputy.Utility, :who_am_i, [client])
     end
 
     test "returns HTTP error for 500 response", %{client: client} do
