@@ -140,6 +140,23 @@ defmodule Deputy do
 
   This is used internally by the API module functions.
 
+  ## Options
+
+  * `:body` - Request body, must be a map or list. Encoded as JSON.
+  * `:params` - URL query parameters, must be a map or keyword list.
+  * `:retry` - Retry strategy forwarded to the underlying HTTP client.
+    With the default `Deputy.HTTPClient.Req` adapter this maps directly
+    to `Req`'s `:retry` option. Common values:
+    * `:safe_transient` (recommended) - retry idempotent methods on
+      transient network errors and HTTP 408/429/500/502/503/504.
+    * `:transient` - same as `:safe_transient` but also retries
+      non-idempotent methods. Use with caution; may cause duplicate
+      writes for POST requests.
+    * `false` - disable retries (default behaviour when option absent).
+    * A function `(req, resp_or_err) -> boolean | {:delay, ms}`.
+
+    `Req` honours the `Retry-After` header automatically.
+
   ## Returns
 
   * `{:ok, response_body}` - Successful API call with response body
@@ -160,10 +177,11 @@ defmodule Deputy do
       headers: auth_headers(client)
     ]
 
-    # Validate required parameters if provided
     with {:ok, request_opts} <- validate_and_add_body(request_opts, opts),
          {:ok, request_opts} <- validate_and_add_params(request_opts, opts) do
-      client.http_client.request(request_opts)
+      request_opts
+      |> maybe_add_retry(opts)
+      |> client.http_client.request()
     end
   end
 
@@ -192,6 +210,13 @@ defmodule Deputy do
   @spec unwrap!({:ok, value} | {:error, Exception.t()}) :: value when value: term()
   def unwrap!({:ok, value}), do: value
   def unwrap!({:error, error}), do: raise(error)
+
+  defp maybe_add_retry(request_opts, opts) do
+    case Keyword.fetch(opts, :retry) do
+      :error -> request_opts
+      {:ok, retry} -> Keyword.put(request_opts, :retry, retry)
+    end
+  end
 
   defp auth_headers(%__MODULE__{auth_scheme: :bearer, api_key: key}),
     do: [{"Authorization", "Bearer #{key}"}]

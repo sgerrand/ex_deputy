@@ -224,6 +224,41 @@ defmodule DeputyTest do
       assert {:ok, _} = Deputy.request(client, :get, "/test/path")
     end
 
+    test "forwards :retry option to the HTTP client" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        assert Keyword.get(opts, :retry) == :safe_transient
+        {:ok, %{}}
+      end)
+
+      assert {:ok, _} =
+               Deputy.request(client, :get, "/test/path", retry: :safe_transient)
+    end
+
+    test "does not include :retry option when absent" do
+      client =
+        Deputy.new(
+          base_url: "https://test.deputy.com",
+          api_key: "test-key",
+          http_client: Deputy.HTTPClient.Mock
+        )
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn opts ->
+        refute Keyword.has_key?(opts, :retry)
+        {:ok, %{}}
+      end)
+
+      assert {:ok, _} = Deputy.request(client, :get, "/test/path")
+    end
+
     test "sends dpauth header for permanent tokens" do
       client =
         Deputy.new(
