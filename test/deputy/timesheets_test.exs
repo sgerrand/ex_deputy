@@ -77,6 +77,11 @@ defmodule Deputy.TimesheetsTest do
 
       assert {:ok, ^response_body} = Deputy.Timesheets.stop(client, attrs)
     end
+
+    test "returns ValidationError when intTimesheetId is missing", %{client: client} do
+      assert {:error, %Deputy.Error.ValidationError{field: :intTimesheetId}} =
+               Deputy.Timesheets.stop(client, %{intMealbreakMinute: 30})
+    end
   end
 
   describe "pause/2" do
@@ -97,6 +102,11 @@ defmodule Deputy.TimesheetsTest do
       end)
 
       assert {:ok, ^response_body} = Deputy.Timesheets.pause(client, attrs)
+    end
+
+    test "returns ValidationError when intTimesheetId is missing", %{client: client} do
+      assert {:error, %Deputy.Error.ValidationError{field: :intTimesheetId}} =
+               Deputy.Timesheets.pause(client, %{})
     end
   end
 

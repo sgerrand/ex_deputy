@@ -68,7 +68,9 @@ defmodule Deputy.Timesheets do
   """
   @spec stop(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def stop(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/supervise/timesheet/end", body: attrs)
+    with :ok <- Validation.required_fields(attrs, [:intTimesheetId]) do
+      Deputy.request(client, :post, "/api/v1/supervise/timesheet/end", body: attrs)
+    end
   end
 
   @doc """
@@ -93,7 +95,9 @@ defmodule Deputy.Timesheets do
   """
   @spec pause(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def pause(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/supervise/timesheet/pause", body: attrs)
+    with :ok <- Validation.required_fields(attrs, [:intTimesheetId]) do
+      Deputy.request(client, :post, "/api/v1/supervise/timesheet/pause", body: attrs)
+    end
   end
 
   @doc """
