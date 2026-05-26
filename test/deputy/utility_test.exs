@@ -110,6 +110,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
       assert {:ok, ^response_body} = apply(Deputy.Utility, :who_am_i, [client])
     end
   end
@@ -126,6 +127,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
       assert {:ok, ^response_body} = apply(Deputy.Utility, :get_setup, [client])
     end
   end
@@ -206,6 +208,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
       assert ^response_body = apply(Deputy.Utility, :who_am_i!, [client])
     end
   end
@@ -220,6 +223,7 @@ defmodule Deputy.UtilityTest do
         {:ok, response_body}
       end)
 
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
       assert ^response_body = apply(Deputy.Utility, :get_setup!, [client])
     end
   end
@@ -231,6 +235,7 @@ defmodule Deputy.UtilityTest do
         {:error, Deputy.Error.from_response(%{status: 401, body: %{"message" => "Unauthorized"}})}
       end)
 
+      # credo:disable-for-lines:2 Credo.Check.Refactor.Apply
       assert {:error, %Deputy.Error.APIError{status: 401, message: "Unauthorized"}} =
                apply(Deputy.Utility, :who_am_i, [client])
     end

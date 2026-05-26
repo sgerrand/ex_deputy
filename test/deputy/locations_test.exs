@@ -73,6 +73,7 @@ defmodule Deputy.LocationsTest do
         {:ok, response_body}
       end)
 
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
       assert {:ok, ^response_body} = apply(Deputy.Locations, :get, [client, location_id])
     end
   end
@@ -358,6 +359,7 @@ defmodule Deputy.LocationsTest do
          Deputy.Error.from_response(%{status: 404, body: %{"message" => "Location not found"}})}
       end)
 
+      # credo:disable-for-lines:2 Credo.Check.Refactor.Apply
       assert {:error, %Deputy.Error.APIError{status: 404, message: "Location not found"}} =
                apply(Deputy.Locations, :get, [client, 999])
     end
