@@ -22,3 +22,11 @@ pre-commit:
     mado:
       glob: "*.md"
       run: mado check {staged_files}
+
+pre-push:
+  parallel: true
+  commands:
+    credo:
+      run: mix credo --strict
+    test:
+      run: mix test --warnings-as-errors
