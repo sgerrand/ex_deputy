@@ -11,6 +11,10 @@ defmodule Deputy.MixProject do
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      dialyzer: [
+        plt_local_path: "priv/plts",
+        plt_core_path: "priv/plts"
+      ],
       test_coverage: [tool: ExCoveralls, test_task: "test"],
 
       # Hex

@@ -28,6 +28,9 @@ deputy-*.tar
 # Ignore Expublish artefacts
 RELEASE.md
 
+# Dialyzer PLTs (built locally; cached in CI)
+/priv/plts/
+
 # Ignore local configuration for coding agents.
 /.claude/
 /.codex/
