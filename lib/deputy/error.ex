@@ -137,9 +137,13 @@ defmodule Deputy.Error do
   @spec from_response(map()) :: t()
   def from_response(%{status: 429, body: body, headers: headers}) do
     %RateLimitError{
-      retry_after: get_retry_after_header(headers) || get_retry_after(body),
-      limit: get_rate_limit(body),
-      remaining: get_rate_remaining(body)
+      retry_after: header_int(headers, "retry-after") || get_retry_after(body),
+      limit:
+        header_int(headers, "x-ratelimit-limit") ||
+          header_int(headers, "x-rate-limit-limit") || get_rate_limit(body),
+      remaining:
+        header_int(headers, "x-ratelimit-remaining") ||
+          header_int(headers, "x-rate-limit-remaining") || get_rate_remaining(body)
     }
   end
 
@@ -201,20 +205,45 @@ defmodule Deputy.Error do
     }
   end
 
-  defp get_retry_after_header(headers) when is_map(headers) do
-    case Map.get(headers, "retry-after") || Map.get(headers, "Retry-After") do
-      value when is_binary(value) ->
-        case Integer.parse(value) do
-          {seconds, ""} -> seconds
-          _ -> nil
-        end
+  defp header_int(headers, name) when is_map(headers) do
+    headers |> fetch_header(name) |> parse_int()
+  end
 
-      _ ->
-        nil
+  defp header_int(headers, name) when is_list(headers) do
+    case Enum.find(headers, fn
+           {k, _} when is_binary(k) -> String.downcase(k) == name
+           _ -> false
+         end) do
+      {_, v} -> parse_int(v)
+      _ -> nil
     end
   end
 
-  defp get_retry_after_header(_), do: nil
+  defp header_int(_, _), do: nil
+
+  defp fetch_header(headers, name) do
+    case Map.get(headers, name) do
+      nil ->
+        Enum.find_value(headers, fn
+          {k, v} when is_binary(k) -> if String.downcase(k) == name, do: v
+          _ -> nil
+        end)
+
+      v ->
+        v
+    end
+  end
+
+  defp parse_int([v | _]), do: parse_int(v)
+
+  defp parse_int(v) when is_binary(v) do
+    case Integer.parse(v) do
+      {n, ""} -> n
+      _ -> nil
+    end
+  end
+
+  defp parse_int(_), do: nil
 
   defp get_retry_after(body) do
     case body do

@@ -189,7 +189,7 @@ defmodule Deputy.ErrorTest do
       assert error.retry_after == nil
     end
 
-    test "handles 429 with non-map headers gracefully" do
+    test "handles 429 with empty list headers gracefully" do
       response = %{
         status: 429,
         body: %{"retry_after" => 60},
@@ -200,6 +200,95 @@ defmodule Deputy.ErrorTest do
 
       assert %RateLimitError{} = error
       assert error.retry_after == 60
+    end
+
+    test "reads X-RateLimit headers from a map" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: %{
+          "retry-after" => "10",
+          "x-ratelimit-limit" => "100",
+          "x-ratelimit-remaining" => "0"
+        }
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{retry_after: 10, limit: 100, remaining: 0} = error
+    end
+
+    test "reads X-RateLimit headers from a list of tuples (case-insensitive)" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: [
+          {"Retry-After", "5"},
+          {"X-RateLimit-Limit", "60"},
+          {"X-RateLimit-Remaining", "12"}
+        ]
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{retry_after: 5, limit: 60, remaining: 12} = error
+    end
+
+    test "reads X-RateLimit headers when values are wrapped in a list" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: %{
+          "x-ratelimit-limit" => ["200"],
+          "x-ratelimit-remaining" => ["199"]
+        }
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{limit: 200, remaining: 199} = error
+    end
+
+    test "header values override body fields" do
+      response = %{
+        status: 429,
+        body: %{"rate_limit" => 50, "rate_remaining" => 5},
+        headers: %{
+          "x-ratelimit-limit" => "100",
+          "x-ratelimit-remaining" => "0"
+        }
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{limit: 100, remaining: 0} = error
+    end
+
+    test "falls back to body when headers lack rate-limit fields" do
+      response = %{
+        status: 429,
+        body: %{"rate_limit" => 50, "rate_remaining" => 5},
+        headers: %{"retry-after" => "1"}
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{retry_after: 1, limit: 50, remaining: 5} = error
+    end
+
+    test "accepts X-Rate-Limit-* hyphenated variant" do
+      response = %{
+        status: 429,
+        body: %{},
+        headers: %{
+          "x-rate-limit-limit" => "300",
+          "x-rate-limit-remaining" => "299"
+        }
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{limit: 300, remaining: 299} = error
     end
   end
 
