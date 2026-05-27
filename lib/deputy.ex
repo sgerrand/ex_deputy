@@ -75,6 +75,25 @@ defmodule Deputy do
   | `method` | `atom` | HTTP method |
   | `url` | `String.t()` | Full request URL |
   | `status` | `atom \| integer` | `:ok` for 2xx responses, HTTP status integer for API errors, `:error` for transport errors |
+
+  ### `[:deputy, :request, :exception]`
+
+  Emitted when the underlying HTTP call raises, throws, or exits before a
+  response can be classified. The exception is re-raised after the event
+  is dispatched, so handlers do not swallow failures. No `:stop` event is
+  emitted for the same request when `:exception` fires.
+
+  | measurements | type | description |
+  |---|---|---|
+  | `duration` | `integer` | Elapsed time in native units before the failure |
+
+  | metadata | type | description |
+  |---|---|---|
+  | `method` | `atom` | HTTP method |
+  | `url` | `String.t()` | Full request URL |
+  | `kind` | `:error \| :exit \| :throw` | Kind of failure, matching `Kernel.SpecialForms` semantics |
+  | `reason` | `Exception.t() \| term()` | Exception struct (for `:error`) or raw value (for `:throw`/`:exit`) |
+  | `stacktrace` | `list` | Stacktrace captured at the failure site |
   """
 
   alias Deputy.Error

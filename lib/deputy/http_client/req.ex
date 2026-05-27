@@ -1,6 +1,9 @@
 defmodule Deputy.HTTPClient.Req do
   @moduledoc """
-  HTTP client implementation using Req
+  HTTP client implementation using Req.
+
+  See `Deputy`'s moduledoc for the `[:deputy, :request, :start | :stop |
+  :exception]` telemetry events emitted around each request.
   """
   @behaviour Deputy.HTTPClient
 
@@ -17,34 +20,56 @@ defmodule Deputy.HTTPClient.Req do
       url: url
     })
 
-    result =
-      case Req.request(opts) do
-        {:ok, %{status: status, body: body}} when status in 200..299 ->
-          {:ok, body}
+    try do
+      result = do_request(opts)
+      duration = System.monotonic_time() - start_time
 
-        {:ok, %{status: status, body: body, headers: headers}} ->
-          error = Error.from_response(%{status: status, body: body, headers: headers})
-          {:error, error}
+      :telemetry.execute([:deputy, :request, :stop], %{duration: duration}, %{
+        method: method,
+        url: url,
+        status: stop_status(result)
+      })
 
-        {:error, error} ->
-          {:error, Error.from_response(error)}
-      end
+      result
+    rescue
+      exception ->
+        emit_exception(method, url, start_time, :error, exception, __STACKTRACE__)
+        reraise exception, __STACKTRACE__
+    catch
+      kind, reason ->
+        emit_exception(method, url, start_time, kind, reason, __STACKTRACE__)
+        :erlang.raise(kind, reason, __STACKTRACE__)
+    end
+  end
 
-    duration = System.monotonic_time() - start_time
+  defp do_request(opts) do
+    case Req.request(opts) do
+      {:ok, %{status: status, body: body}} when status in 200..299 ->
+        {:ok, body}
 
-    status =
-      case result do
-        {:ok, _} -> :ok
-        {:error, %{status: s}} when not is_nil(s) -> s
-        {:error, _} -> :error
-      end
+      {:ok, %{status: status, body: body, headers: headers}} ->
+        {:error, Error.from_response(%{status: status, body: body, headers: headers})}
 
-    :telemetry.execute([:deputy, :request, :stop], %{duration: duration}, %{
-      method: method,
-      url: url,
-      status: status
-    })
+      {:error, error} ->
+        {:error, Error.from_response(error)}
+    end
+  end
 
-    result
+  defp stop_status({:ok, _}), do: :ok
+  defp stop_status({:error, %{status: s}}) when not is_nil(s), do: s
+  defp stop_status({:error, _}), do: :error
+
+  defp emit_exception(method, url, start_time, kind, reason, stacktrace) do
+    :telemetry.execute(
+      [:deputy, :request, :exception],
+      %{duration: System.monotonic_time() - start_time},
+      %{
+        method: method,
+        url: url,
+        kind: kind,
+        reason: reason,
+        stacktrace: stacktrace
+      }
+    )
   end
 end

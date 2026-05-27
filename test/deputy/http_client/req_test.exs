@@ -169,5 +169,65 @@ defmodule Deputy.HTTPClient.ReqTest do
 
       assert_receive {:telemetry_stop, _, _, %{status: :error}}
     end
+
+    test "emits exception telemetry event and re-raises when the adapter raises" do
+      handler_id = "test-deputy-req-exception-#{System.unique_integer()}"
+
+      :telemetry.attach_many(
+        handler_id,
+        [
+          [:deputy, :request, :exception],
+          [:deputy, :request, :stop]
+        ],
+        &__MODULE__.handle_telemetry_event/4,
+        %{pid: self(), key: :telemetry}
+      )
+
+      on_exit(fn -> :telemetry.detach(handler_id) end)
+
+      assert_raise RuntimeError, "boom", fn ->
+        HTTPClientReq.request(
+          method: :get,
+          url: "https://test.deputy.com/api/telemetry-test",
+          adapter: fn _request -> raise "boom" end
+        )
+      end
+
+      assert_receive {:telemetry, [:deputy, :request, :exception], %{duration: _},
+                      %{
+                        method: :get,
+                        url: _,
+                        kind: :error,
+                        reason: %RuntimeError{message: "boom"},
+                        stacktrace: stacktrace
+                      }}
+
+      assert is_list(stacktrace)
+      refute_received {:telemetry, [:deputy, :request, :stop], _, _}
+    end
+
+    test "emits exception telemetry event for non-error throws" do
+      handler_id = "test-deputy-req-throw-#{System.unique_integer()}"
+
+      :telemetry.attach(
+        handler_id,
+        [:deputy, :request, :exception],
+        &__MODULE__.handle_telemetry_event/4,
+        %{pid: self(), key: :telemetry_exception}
+      )
+
+      on_exit(fn -> :telemetry.detach(handler_id) end)
+
+      assert catch_throw(
+               HTTPClientReq.request(
+                 method: :get,
+                 url: "https://test.deputy.com/api/telemetry-test",
+                 adapter: fn _request -> throw(:bail) end
+               )
+             ) == :bail
+
+      assert_receive {:telemetry_exception, [:deputy, :request, :exception], %{duration: _},
+                      %{kind: :throw, reason: :bail}}
+    end
   end
 end
