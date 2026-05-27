@@ -1,22 +1,5 @@
 defmodule Deputy.TimesheetsTest do
-  use ExUnit.Case, async: true
-
-  import Mox
-
-  # Make sure mocks are verified when the test exits
-  setup :verify_on_exit!
-
-  # Create a test client for all tests
-  setup do
-    client =
-      Deputy.new(
-        base_url: "https://test.deputy.com",
-        api_key: "test-key",
-        http_client: Deputy.HTTPClient.Mock
-      )
-
-    {:ok, client: client}
-  end
+  use Deputy.ClientCase, async: true
 
   describe "start/2" do
     test "starts a timesheet", %{client: client} do
