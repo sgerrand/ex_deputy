@@ -56,15 +56,14 @@ defmodule Deputy.ConstantsTest do
     end
 
     test "guards work in case clauses" do
-      label =
-        case 2 do
-          g when is_male(g) -> :male
-          g when is_female(g) -> :female
-          g when is_unspecified(g) -> :unspecified
-        end
+      label = classify_gender(female())
 
       assert label == :female
     end
+
+    defp classify_gender(g) when is_male(g), do: :male
+    defp classify_gender(g) when is_female(g), do: :female
+    defp classify_gender(g) when is_unspecified(g), do: :unspecified
   end
 
   describe "LeaveStatus guards" do
