@@ -3,8 +3,6 @@ defmodule Deputy.Sales do
   Functions for interacting with sales metrics in Deputy.
   """
 
-  alias Deputy
-
   @doc """
   Add a sale to sales metrics.
 

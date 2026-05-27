@@ -3,7 +3,6 @@ defmodule Deputy.Rosters do
   Functions for interacting with rosters in Deputy.
   """
 
-  alias Deputy
   alias Deputy.Validation
 
   @doc """

@@ -3,7 +3,6 @@ defmodule Deputy.Timesheets do
   Functions for interacting with timesheets in Deputy.
   """
 
-  alias Deputy
   alias Deputy.Validation
 
   @doc """

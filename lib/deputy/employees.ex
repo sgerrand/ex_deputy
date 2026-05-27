@@ -3,7 +3,6 @@ defmodule Deputy.Employees do
   Functions for interacting with employees in Deputy.
   """
 
-  alias Deputy
   alias Deputy.Validation
 
   @doc """

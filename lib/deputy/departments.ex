@@ -3,7 +3,6 @@ defmodule Deputy.Departments do
   Functions for interacting with departments (operational units) in Deputy.
   """
 
-  alias Deputy
   alias Deputy.Validation
 
   @doc """
