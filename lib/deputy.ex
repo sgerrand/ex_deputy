@@ -111,7 +111,13 @@ defmodule Deputy do
 
   defstruct [:base_url, :api_key, :http_client, :auth_scheme]
 
-  @valid_auth_schemes [:bearer, :oauth, :dpauth]
+  @auth_headers %{
+    bearer: {"Authorization", "Bearer "},
+    oauth: {"Authorization", "OAuth "},
+    dpauth: {"dpauth", ""}
+  }
+
+  @valid_auth_schemes Map.keys(@auth_headers)
 
   @doc """
   Creates a new Deputy client with the given configuration.
@@ -196,8 +202,9 @@ defmodule Deputy do
       retry: Keyword.get(opts, :retry)
     }
 
-    with {:ok, request} <- put_body(request, opts),
-         {:ok, request} <- put_params(request, opts) do
+    with {:ok, request} <- put_field(request, opts, :body, "Request body must be a map or list"),
+         {:ok, request} <-
+           put_field(request, opts, :params, "Request params must be a map or list") do
       client.http_client.request(request)
     end
   end
@@ -228,47 +235,25 @@ defmodule Deputy do
   def unwrap!({:ok, value}), do: value
   def unwrap!({:error, error}), do: raise(error)
 
-  defp auth_headers(%__MODULE__{auth_scheme: :bearer, api_key: key}),
-    do: [{"Authorization", "Bearer #{key}"}]
-
-  defp auth_headers(%__MODULE__{auth_scheme: :oauth, api_key: key}),
-    do: [{"Authorization", "OAuth #{key}"}]
-
-  defp auth_headers(%__MODULE__{auth_scheme: :dpauth, api_key: key}),
-    do: [{"dpauth", key}]
-
-  defp put_body(request, opts) do
-    case Keyword.get(opts, :body) do
-      nil ->
-        {:ok, request}
-
-      body when is_map(body) or is_list(body) ->
-        {:ok, %{request | body: body}}
-
-      _invalid ->
-        {:error,
-         %Error.ValidationError{
-           message: "Request body must be a map or list",
-           field: :body,
-           value: Keyword.get(opts, :body)
-         }}
-    end
+  defp auth_headers(%__MODULE__{auth_scheme: scheme, api_key: key}) do
+    {name, prefix} = Map.fetch!(@auth_headers, scheme)
+    [{name, prefix <> key}]
   end
 
-  defp put_params(request, opts) do
-    case Keyword.get(opts, :params) do
+  defp put_field(request, opts, field, message) do
+    case Keyword.get(opts, field) do
       nil ->
         {:ok, request}
 
-      params when is_map(params) or is_list(params) ->
-        {:ok, %{request | params: params}}
+      value when is_map(value) or is_list(value) ->
+        {:ok, %{request | field => value}}
 
-      _invalid ->
+      invalid ->
         {:error,
          %Error.ValidationError{
-           message: "Request params must be a map or list",
-           field: :params,
-           value: Keyword.get(opts, :params)
+           message: message,
+           field: field,
+           value: invalid
          }}
     end
   end
