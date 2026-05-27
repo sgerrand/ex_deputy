@@ -223,15 +223,20 @@ defmodule Deputy.Error do
 
   defp fetch_header(headers, name) do
     case Map.get(headers, name) do
-      nil ->
-        Enum.find_value(headers, fn
-          {k, v} when is_binary(k) -> if String.downcase(k) == name, do: v
-          _ -> nil
-        end)
-
-      v ->
-        v
+      nil -> find_header_value(headers, name)
+      v -> v
     end
+  end
+
+  defp find_header_value(headers, name) do
+    Enum.find_value(headers, fn
+      {k, v} when is_binary(k) -> match_header(k, v, name)
+      _ -> nil
+    end)
+  end
+
+  defp match_header(key, value, name) do
+    if String.downcase(key) == name, do: value
   end
 
   defp parse_int([v | _]), do: parse_int(v)
