@@ -3,8 +3,7 @@ defmodule Deputy.Locations do
   Functions for interacting with locations (companies) in Deputy.
   """
 
-  alias Deputy
-  alias Deputy.Error
+  alias Deputy.Validation
 
   @doc """
   Get all locations.
@@ -15,35 +14,11 @@ defmodule Deputy.Locations do
       Deputy.Locations.list(client)
       # => {:ok, [%{"Id" => 1, "CompanyName" => "Test Company"}]}
 
-      # Using the bang version
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.list!(client)
-      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
-
-      # Error handling
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      case Deputy.Locations.list(client) do
-        {:ok, locations} -> locations
-        {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
-        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      end
   """
-  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Error.t()}
+  @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def list(client) do
     Deputy.request(client, :get, "/api/v1/resource/Company")
   end
-
-  @doc """
-  Get all locations. Raises an exception if the API call returns an error.
-
-  ## Examples
-
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.list!(client)
-      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
-  """
-  @spec list!(Deputy.t()) :: list(map())
-  def list!(client), do: client |> list() |> Deputy.unwrap!()
 
   @doc """
   Get a simplified list of locations.
@@ -54,35 +29,11 @@ defmodule Deputy.Locations do
       Deputy.Locations.list_simplified(client)
       # => {:ok, [%{"Id" => 1, "CompanyName" => "Test Company"}]}
 
-      # Using the bang version
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.list_simplified!(client)
-      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
-
-      # Error handling
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      case Deputy.Locations.list_simplified(client) do
-        {:ok, locations} -> locations
-        {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
-        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      end
   """
-  @spec list_simplified(Deputy.t()) :: {:ok, list(map())} | {:error, Error.t()}
+  @spec list_simplified(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
   def list_simplified(client) do
     Deputy.request(client, :get, "/api/v1/supervise/company/simple")
   end
-
-  @doc """
-  Get a simplified list of locations. Raises an exception if the API call returns an error.
-
-  ## Examples
-
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.list_simplified!(client)
-      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
-  """
-  @spec list_simplified!(Deputy.t()) :: list(map())
-  def list_simplified!(client), do: client |> list_simplified() |> Deputy.unwrap!()
 
   @doc """
   Get a location's settings.
@@ -98,40 +49,11 @@ defmodule Deputy.Locations do
       Deputy.Locations.get_settings(client, 1)
       # => {:ok, %{"WEEK_START" => 1}}
 
-      # Using the bang version
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.get_settings!(client, 1)
-      # => %{"WEEK_START" => 1}
-
-      # Error handling
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      case Deputy.Locations.get_settings(client, 1) do
-        {:ok, settings} -> settings
-        {:error, %Deputy.Error.APIError{status: 404}} -> "Location not found"
-        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      end
   """
-  @spec get_settings(Deputy.t(), integer()) :: {:ok, map()} | {:error, Error.t()}
+  @spec get_settings(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def get_settings(client, id) do
     Deputy.request(client, :get, "/api/v1/supervise/company/#{id}/settings")
   end
-
-  @doc """
-  Get a location's settings. Raises an exception if the API call returns an error.
-
-  ## Parameters
-
-  - `client`: A Deputy client.
-  - `id`: The ID of the location to retrieve settings for.
-
-  ## Examples
-
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.get_settings!(client, 1)
-      # => %{"WEEK_START" => 1}
-  """
-  @spec get_settings!(Deputy.t(), integer()) :: map()
-  def get_settings!(client, id), do: client |> get_settings(id) |> Deputy.unwrap!()
 
   @doc """
   Modify settings for all locations.
@@ -147,41 +69,11 @@ defmodule Deputy.Locations do
       Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2})
       # => {:ok, %{"success" => true}}
 
-      # Using the bang version
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.update_all_settings!(client, %{"WEEK_START" => 2})
-      # => %{"success" => true}
-
-      # Error handling
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      case Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2}) do
-        {:ok, result} -> "Settings updated"
-        {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
-        {:error, %Deputy.Error.ValidationError{}} -> "Invalid settings data"
-      end
   """
-  @spec update_all_settings(Deputy.t(), map()) :: {:ok, map()} | {:error, Error.t()}
+  @spec update_all_settings(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update_all_settings(client, settings) do
     Deputy.request(client, :post, "/api/v1/supervise/company/all/settings", body: settings)
   end
-
-  @doc """
-  Modify settings for all locations. Raises an exception if the API call returns an error.
-
-  ## Parameters
-
-  - `client`: A Deputy client.
-  - `settings`: A map of settings to update.
-
-  ## Examples
-
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.update_all_settings!(client, %{"WEEK_START" => 2})
-      # => %{"success" => true}
-  """
-  @spec update_all_settings!(Deputy.t(), map()) :: map()
-  def update_all_settings!(client, settings),
-    do: client |> update_all_settings(settings) |> Deputy.unwrap!()
 
   @doc """
   Modify settings for a single location.
@@ -198,42 +90,11 @@ defmodule Deputy.Locations do
       Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2})
       # => {:ok, %{"success" => true}}
 
-      # Using the bang version
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.update_settings!(client, 1, %{"WEEK_START" => 2})
-      # => %{"success" => true}
-
-      # Error handling
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      case Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2}) do
-        {:ok, result} -> "Settings updated"
-        {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
-        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      end
   """
-  @spec update_settings(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Error.t()}
+  @spec update_settings(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update_settings(client, id, settings) do
     Deputy.request(client, :post, "/api/v1/supervise/company/#{id}/settings", body: settings)
   end
-
-  @doc """
-  Modify settings for a single location. Raises an exception if the API call returns an error.
-
-  ## Parameters
-
-  - `client`: A Deputy client.
-  - `id`: The ID of the location to update settings for.
-  - `settings`: A map of settings to update.
-
-  ## Examples
-
-      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      Deputy.Locations.update_settings!(client, 1, %{"WEEK_START" => 2})
-      # => %{"success" => true}
-  """
-  @spec update_settings!(Deputy.t(), integer(), map()) :: map()
-  def update_settings!(client, id, settings),
-    do: client |> update_settings(id, settings) |> Deputy.unwrap!()
 
   @doc """
   Archive a location.
@@ -312,7 +173,18 @@ defmodule Deputy.Locations do
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create(client, attrs) do
-    Deputy.request(client, :put, "/api/v1/resource/Company", body: attrs)
+    required = [
+      :strWorkplaceName,
+      :strWorkplaceCode,
+      :strAddress,
+      :intIsWorkplace,
+      :intIsPayrollEntity,
+      :strTimezone
+    ]
+
+    with :ok <- Validation.required_fields(attrs, required) do
+      Deputy.request(client, :put, "/api/v1/resource/Company", body: attrs)
+    end
   end
 
   @doc """
@@ -379,7 +251,22 @@ defmodule Deputy.Locations do
   """
   @spec create_workplace(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_workplace(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/my/setup/addNewWorkplace", body: attrs)
+    required = [
+      :strWorkplaceName,
+      :strWorkplaceTimezone,
+      :strAddress,
+      :strLat,
+      :strLon,
+      :intCountry,
+      :arrAreaNames,
+      :strWorkplaceCode,
+      :blnIsWorkplace,
+      :blnIsPayrollEntity
+    ]
+
+    with :ok <- Validation.required_fields(attrs, required) do
+      Deputy.request(client, :post, "/api/v1/my/setup/addNewWorkplace", body: attrs)
+    end
   end
 
   @doc """
@@ -406,4 +293,51 @@ defmodule Deputy.Locations do
   def get(client, id) do
     Deputy.request(client, :get, "/api/v1/my/location/#{id}")
   end
+
+  @doc "Same as `list/1` but raises on error."
+  @spec list!(Deputy.t()) :: list(map())
+  def list!(client), do: client |> list() |> Deputy.unwrap!()
+
+  @doc "Same as `list_simplified/1` but raises on error."
+  @spec list_simplified!(Deputy.t()) :: list(map())
+  def list_simplified!(client), do: client |> list_simplified() |> Deputy.unwrap!()
+
+  @doc "Same as `get_settings/2` but raises on error."
+  @spec get_settings!(Deputy.t(), integer()) :: map()
+  def get_settings!(client, id), do: client |> get_settings(id) |> Deputy.unwrap!()
+
+  @doc "Same as `update_all_settings/2` but raises on error."
+  @spec update_all_settings!(Deputy.t(), map()) :: map()
+  def update_all_settings!(client, settings),
+    do: client |> update_all_settings(settings) |> Deputy.unwrap!()
+
+  @doc "Same as `update_settings/3` but raises on error."
+  @spec update_settings!(Deputy.t(), integer(), map()) :: map()
+  def update_settings!(client, id, settings),
+    do: client |> update_settings(id, settings) |> Deputy.unwrap!()
+
+  @doc "Same as `archive/2` but raises on error."
+  @spec archive!(Deputy.t(), integer()) :: map()
+  def archive!(client, id), do: client |> archive(id) |> Deputy.unwrap!()
+
+  @doc "Same as `delete/2` but raises on error."
+  @spec delete!(Deputy.t(), integer()) :: map()
+  def delete!(client, id), do: client |> delete(id) |> Deputy.unwrap!()
+
+  @doc "Same as `create/2` but raises on error."
+  @spec create!(Deputy.t(), map()) :: map()
+  def create!(client, attrs), do: client |> create(attrs) |> Deputy.unwrap!()
+
+  @doc "Same as `update/3` but raises on error."
+  @spec update!(Deputy.t(), integer(), map()) :: map()
+  def update!(client, id, attrs), do: client |> update(id, attrs) |> Deputy.unwrap!()
+
+  @doc "Same as `create_workplace/2` but raises on error."
+  @spec create_workplace!(Deputy.t(), map()) :: map()
+  def create_workplace!(client, attrs), do: client |> create_workplace(attrs) |> Deputy.unwrap!()
+
+  @doc "Same as `get/2` but raises on error."
+  @deprecated "Use Deputy.My.location!/2 instead."
+  @spec get!(Deputy.t(), integer()) :: map()
+  def get!(client, id), do: client |> get(id) |> Deputy.unwrap!()
 end
