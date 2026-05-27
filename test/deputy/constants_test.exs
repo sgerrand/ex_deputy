@@ -44,4 +44,64 @@ defmodule Deputy.ConstantsTest do
       assert Webhook.topic_roster_update() == "Roster.Update"
     end
   end
+
+  describe "Gender guards" do
+    import Deputy.Constants.Gender
+
+    test "is_male/1, is_female/1, is_unspecified/1 match their codes" do
+      assert is_male(1)
+      assert is_female(2)
+      assert is_unspecified(3)
+      refute is_male(2)
+    end
+
+    test "guards work in case clauses" do
+      label =
+        case 2 do
+          g when is_male(g) -> :male
+          g when is_female(g) -> :female
+          g when is_unspecified(g) -> :unspecified
+        end
+
+      assert label == :female
+    end
+  end
+
+  describe "LeaveStatus guards" do
+    import Deputy.Constants.LeaveStatus
+
+    test "matches each status code" do
+      assert is_pending(0)
+      assert is_approved(1)
+      assert is_declined(2)
+      assert is_cancelled(3)
+      refute is_approved(0)
+    end
+  end
+
+  describe "Roster guards" do
+    import Deputy.Constants.Roster
+
+    test "publish_mode and locations guards" do
+      assert is_publish_mode_notify(1)
+      assert is_publish_mode_silent(2)
+      assert is_all_locations(1)
+      assert is_single_location(0)
+    end
+  end
+
+  describe "Webhook guards" do
+    import Deputy.Constants.Webhook
+
+    test "string-equality guards match each topic" do
+      assert is_type_url("URL")
+      assert is_topic_timesheet_insert("Timesheet.Insert")
+      assert is_topic_timesheet_update("Timesheet.Update")
+      assert is_topic_employee_insert("Employee.Insert")
+      assert is_topic_employee_update("Employee.Update")
+      assert is_topic_roster_insert("Roster.Insert")
+      assert is_topic_roster_update("Roster.Update")
+      refute is_topic_timesheet_insert("Timesheet.Update")
+    end
+  end
 end
