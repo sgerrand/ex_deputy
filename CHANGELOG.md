@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file. See [Keep a
 CHANGELOG](http://keepachangelog.com/) for how to update this file. This project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.0](https://github.com/sgerrand/ex_deputy/compare/v0.4.1...v0.5.0) (2026-05-27)
+
+
+### Features
+
+* **auth:** support OAuth and dpauth schemes via :auth_scheme option ([888d084](https://github.com/sgerrand/ex_deputy/commit/888d084af2e3113f6295634a09cb944293db9d1b))
+* **constants:** add defguard predicates alongside value accessors ([8516e9f](https://github.com/sgerrand/ex_deputy/commit/8516e9f83e7fa1ec2e511dc81199ec8052c3f9e2))
+* **error:** parse X-RateLimit headers on 429 responses ([c0e7ab5](https://github.com/sgerrand/ex_deputy/commit/c0e7ab5c1f36ceb8526120965b2cb1a8fdf51d15))
+* **http:** support :retry option for transient failures ([01b10ed](https://github.com/sgerrand/ex_deputy/commit/01b10ed0dc1513a0aff387e15785faabe0c70e28))
+* **telemetry:** emit [:deputy, :request, :exception] on raise/throw/exit ([81472b6](https://github.com/sgerrand/ex_deputy/commit/81472b6e6d1bd3eb44130162263659ef1c593d87))
+* **validation:** reject nil/empty values and validate timesheet ops ([a4d01c6](https://github.com/sgerrand/ex_deputy/commit/a4d01c64e2d16bcd6dd15b0a46441f97521f2917))
+* **validation:** require documented fields in remaining create/update calls ([3542d40](https://github.com/sgerrand/ex_deputy/commit/3542d40555e15651d67464c6ba964192f785a566))
+
 ## [0.4.1](https://github.com/sgerrand/ex_deputy/compare/v0.4.0...v0.4.1) (2026-04-20)
 
 
