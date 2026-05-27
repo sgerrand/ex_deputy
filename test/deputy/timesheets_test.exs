@@ -28,13 +28,13 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => 789}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
+      |> expect(:request, fn req ->
+        assert req.method == :post
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/timesheet/start"
 
-        assert Keyword.get(opts, :json) == attrs
+        assert req.body == attrs
 
         {:ok, response_body}
       end)
@@ -67,10 +67,10 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/timesheet/end"
-        assert Keyword.get(opts, :json) == attrs
+      |> expect(:request, fn req ->
+        assert req.method == :post
+        assert req.url == "https://test.deputy.com/api/v1/supervise/timesheet/end"
+        assert req.body == attrs
 
         {:ok, response_body}
       end)
@@ -90,13 +90,13 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
+      |> expect(:request, fn req ->
+        assert req.method == :post
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/timesheet/pause"
 
-        assert Keyword.get(opts, :json) == attrs
+        assert req.body == attrs
 
         {:ok, response_body}
       end)
@@ -116,10 +116,10 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => timesheet_id, "StartTime" => "2023-01-01T09:00:00"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :get
+      |> expect(:request, fn req ->
+        assert req.method == :get
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/timesheet/#{timesheet_id}/details"
 
         {:ok, response_body}
@@ -135,10 +135,10 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => timesheet_id, "StartTime" => "2023-01-01T09:00:00"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :get
+      |> expect(:request, fn req ->
+        assert req.method == :get
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/resource/Timesheet/#{timesheet_id}"
 
         {:ok, response_body}
@@ -158,13 +158,13 @@ defmodule Deputy.TimesheetsTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
+      |> expect(:request, fn req ->
+        assert req.method == :post
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/resource/Timesheet/QUERY"
 
-        assert Keyword.get(opts, :json) == query
+        assert req.body == query
 
         {:ok, response_body}
       end)
@@ -179,13 +179,13 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => timesheet_id, "StartTime" => "2023-01-01T09:00:00"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
+      |> expect(:request, fn req ->
+        assert req.method == :post
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/resource/Timesheet/#{timesheet_id}"
 
-        assert Keyword.get(opts, :json) == query
+        assert req.body == query
 
         {:ok, response_body}
       end)
@@ -200,10 +200,10 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => 789}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
+      |> expect(:request, fn req ->
+        assert req.method == :post
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/timesheet/start"
 
         {:ok, response_body}
@@ -219,8 +219,8 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/timesheet/end"
+      |> expect(:request, fn req ->
+        assert req.url == "https://test.deputy.com/api/v1/supervise/timesheet/end"
         {:ok, response_body}
       end)
 
@@ -234,8 +234,8 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :url) ==
+      |> expect(:request, fn req ->
+        assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/timesheet/pause"
 
         {:ok, response_body}
@@ -250,8 +250,8 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => 123}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :url) ==
+      |> expect(:request, fn req ->
+        assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/timesheet/123/details"
 
         {:ok, response_body}
@@ -266,9 +266,9 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => 1}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :get
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/resource/Timesheet/1"
+      |> expect(:request, fn req ->
+        assert req.method == :get
+        assert req.url == "https://test.deputy.com/api/v1/resource/Timesheet/1"
         {:ok, response_body}
       end)
 
@@ -280,10 +280,10 @@ defmodule Deputy.TimesheetsTest do
       response_body = [%{"Id" => 1}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
+      |> expect(:request, fn req ->
+        assert req.method == :post
 
-        assert Keyword.get(opts, :url) ==
+        assert req.url ==
                  "https://test.deputy.com/api/v1/resource/Timesheet/QUERY"
 
         {:ok, response_body}
@@ -297,9 +297,9 @@ defmodule Deputy.TimesheetsTest do
       response_body = %{"Id" => 1}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/resource/Timesheet/1"
+      |> expect(:request, fn req ->
+        assert req.method == :post
+        assert req.url == "https://test.deputy.com/api/v1/resource/Timesheet/1"
         {:ok, response_body}
       end)
 
@@ -312,7 +312,7 @@ defmodule Deputy.TimesheetsTest do
       attrs = %{intEmployeeId: 1, intCompanyId: 2}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error,
          Deputy.Error.from_response(%{
            status: 422,
@@ -327,7 +327,7 @@ defmodule Deputy.TimesheetsTest do
 
     test "returns HTTP error for 500 response", %{client: client} do
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error, Deputy.Error.from_response(%{status: 500, body: "Internal Server Error"})}
       end)
 
@@ -337,7 +337,7 @@ defmodule Deputy.TimesheetsTest do
 
     test "returns rate limit error for 429 response", %{client: client} do
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error, Deputy.Error.from_response(%{status: 429, body: %{"retry_after" => 60}})}
       end)
 

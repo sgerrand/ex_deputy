@@ -8,11 +8,10 @@ defmodule Deputy.HTTPClient.Req do
   @behaviour Deputy.HTTPClient
 
   alias Deputy.Error
+  alias Deputy.HTTPClient.Request
 
   @impl true
-  def request(opts) do
-    method = Keyword.get(opts, :method)
-    url = Keyword.get(opts, :url)
+  def request(%Request{method: method, url: url} = request) do
     start_time = System.monotonic_time()
 
     :telemetry.execute([:deputy, :request, :start], %{system_time: System.system_time()}, %{
@@ -21,7 +20,7 @@ defmodule Deputy.HTTPClient.Req do
     })
 
     try do
-      result = do_request(opts)
+      result = do_request(request)
       duration = System.monotonic_time() - start_time
 
       :telemetry.execute([:deputy, :request, :stop], %{duration: duration}, %{
@@ -42,8 +41,8 @@ defmodule Deputy.HTTPClient.Req do
     end
   end
 
-  defp do_request(opts) do
-    case Req.request(opts) do
+  defp do_request(request) do
+    case Req.request(to_req_opts(request)) do
       {:ok, %{status: status, body: body}} when status in 200..299 ->
         {:ok, body}
 
@@ -54,6 +53,17 @@ defmodule Deputy.HTTPClient.Req do
         {:error, Error.from_response(error)}
     end
   end
+
+  defp to_req_opts(%Request{} = request) do
+    [method: request.method, url: request.url, headers: request.headers]
+    |> put_unless_nil(:json, request.body)
+    |> put_unless_nil(:params, request.params)
+    |> put_unless_nil(:retry, request.retry)
+    |> Keyword.merge(request.adapter_opts || [])
+  end
+
+  defp put_unless_nil(opts, _key, nil), do: opts
+  defp put_unless_nil(opts, key, value), do: Keyword.put(opts, key, value)
 
   defp stop_status({:ok, _}), do: :ok
   defp stop_status({:error, %{status: s}}) when not is_nil(s), do: s

@@ -98,6 +98,7 @@ defmodule Deputy do
 
   alias Deputy.Error
   alias Deputy.HTTPClient
+  alias Deputy.HTTPClient.Request
 
   @type auth_scheme :: :bearer | :oauth | :dpauth
 
@@ -188,19 +189,16 @@ defmodule Deputy do
   """
   @spec request(t(), atom(), String.t(), keyword()) :: {:ok, map() | list()} | {:error, Error.t()}
   def request(%__MODULE__{} = client, method, path, opts \\ []) do
-    url = client.base_url <> path
-
-    request_opts = [
+    request = %Request{
       method: method,
-      url: url,
-      headers: auth_headers(client)
-    ]
+      url: client.base_url <> path,
+      headers: auth_headers(client),
+      retry: Keyword.get(opts, :retry)
+    }
 
-    with {:ok, request_opts} <- validate_and_add_body(request_opts, opts),
-         {:ok, request_opts} <- validate_and_add_params(request_opts, opts) do
-      request_opts
-      |> maybe_add_retry(opts)
-      |> client.http_client.request()
+    with {:ok, request} <- put_body(request, opts),
+         {:ok, request} <- put_params(request, opts) do
+      client.http_client.request(request)
     end
   end
 
@@ -230,13 +228,6 @@ defmodule Deputy do
   def unwrap!({:ok, value}), do: value
   def unwrap!({:error, error}), do: raise(error)
 
-  defp maybe_add_retry(request_opts, opts) do
-    case Keyword.fetch(opts, :retry) do
-      :error -> request_opts
-      {:ok, retry} -> Keyword.put(request_opts, :retry, retry)
-    end
-  end
-
   defp auth_headers(%__MODULE__{auth_scheme: :bearer, api_key: key}),
     do: [{"Authorization", "Bearer #{key}"}]
 
@@ -246,13 +237,13 @@ defmodule Deputy do
   defp auth_headers(%__MODULE__{auth_scheme: :dpauth, api_key: key}),
     do: [{"dpauth", key}]
 
-  defp validate_and_add_body(request_opts, opts) do
+  defp put_body(request, opts) do
     case Keyword.get(opts, :body) do
       nil ->
-        {:ok, request_opts}
+        {:ok, request}
 
       body when is_map(body) or is_list(body) ->
-        {:ok, Keyword.put(request_opts, :json, body)}
+        {:ok, %{request | body: body}}
 
       _invalid ->
         {:error,
@@ -264,13 +255,13 @@ defmodule Deputy do
     end
   end
 
-  defp validate_and_add_params(request_opts, opts) do
+  defp put_params(request, opts) do
     case Keyword.get(opts, :params) do
       nil ->
-        {:ok, request_opts}
+        {:ok, request}
 
       params when is_map(params) or is_list(params) ->
-        {:ok, Keyword.put(request_opts, :params, params)}
+        {:ok, %{request | params: params}}
 
       _invalid ->
         {:error,

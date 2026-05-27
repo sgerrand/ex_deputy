@@ -3,10 +3,25 @@ defmodule Deputy.HTTPClient.ReqTest do
 
   alias Deputy.Error.{APIError, HTTPError}
   alias Deputy.HTTPClient.Req, as: HTTPClientReq
+  alias Deputy.HTTPClient.Request
   alias Req.Test, as: ReqTest
 
   def handle_telemetry_event(event, measurements, metadata, %{pid: pid, key: key}) do
     send(pid, {key, event, measurements, metadata})
+  end
+
+  defp build_request(opts) do
+    {adapter_opts, fields} = Keyword.split(opts, [:plug, :adapter])
+
+    %Request{
+      method: Keyword.get(fields, :method, :get),
+      url: Keyword.fetch!(fields, :url),
+      headers: Keyword.get(fields, :headers, []),
+      body: Keyword.get(fields, :body),
+      params: Keyword.get(fields, :params),
+      retry: Keyword.get(fields, :retry),
+      adapter_opts: adapter_opts
+    }
   end
 
   describe "request/1" do
@@ -15,14 +30,15 @@ defmodule Deputy.HTTPClient.ReqTest do
         ReqTest.json(conn, %{"data" => "success"})
       end)
 
-      opts = [
-        method: :get,
-        url: "https://test.deputy.com/api/test",
-        headers: [{"Authorization", "Bearer test-key"}],
-        plug: {ReqTest, DeputyReqTest2xx}
-      ]
+      request =
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/test",
+          headers: [{"Authorization", "Bearer test-key"}],
+          plug: {ReqTest, DeputyReqTest2xx}
+        )
 
-      assert {:ok, %{"data" => "success"}} = HTTPClientReq.request(opts)
+      assert {:ok, %{"data" => "success"}} = HTTPClientReq.request(request)
     end
 
     test "returns error tuple for 4xx response" do
@@ -31,14 +47,15 @@ defmodule Deputy.HTTPClient.ReqTest do
         ReqTest.json(conn, %{"message" => "Not found"})
       end)
 
-      opts = [
-        method: :get,
-        url: "https://test.deputy.com/api/test",
-        plug: {ReqTest, DeputyReqTest4xx}
-      ]
+      request =
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/test",
+          plug: {ReqTest, DeputyReqTest4xx}
+        )
 
       assert {:error, %APIError{status: 404, message: "Not found"}} =
-               HTTPClientReq.request(opts)
+               HTTPClientReq.request(request)
     end
 
     test "returns error tuple for 5xx response" do
@@ -47,26 +64,28 @@ defmodule Deputy.HTTPClient.ReqTest do
         ReqTest.json(conn, %{"error" => "server error"})
       end)
 
-      opts = [
-        method: :get,
-        url: "https://test.deputy.com/api/test",
-        plug: {ReqTest, DeputyReqTest5xx},
-        retry: false
-      ]
+      request =
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/test",
+          plug: {ReqTest, DeputyReqTest5xx},
+          retry: false
+        )
 
-      assert {:error, %HTTPError{status: 500}} = HTTPClientReq.request(opts)
+      assert {:error, %HTTPError{status: 500}} = HTTPClientReq.request(request)
     end
 
     test "returns error tuple for transport errors" do
-      opts = [
-        method: :get,
-        url: "https://test.deputy.com/api/test",
-        adapter: fn request ->
-          {request, RuntimeError.exception("connection refused")}
-        end
-      ]
+      request =
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/test",
+          adapter: fn r ->
+            {r, RuntimeError.exception("connection refused")}
+          end
+        )
 
-      assert {:error, %HTTPError{status: nil}} = HTTPClientReq.request(opts)
+      assert {:error, %HTTPError{status: nil}} = HTTPClientReq.request(request)
     end
 
     test "emits start telemetry event" do
@@ -86,9 +105,11 @@ defmodule Deputy.HTTPClient.ReqTest do
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
       HTTPClientReq.request(
-        method: :get,
-        url: "https://test.deputy.com/api/telemetry-test",
-        plug: {ReqTest, DeputyReqTestTelemetryStart}
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/telemetry-test",
+          plug: {ReqTest, DeputyReqTestTelemetryStart}
+        )
       )
 
       assert_receive {:telemetry_start, [:deputy, :request, :start], %{system_time: _},
@@ -112,9 +133,11 @@ defmodule Deputy.HTTPClient.ReqTest do
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
       HTTPClientReq.request(
-        method: :get,
-        url: "https://test.deputy.com/api/telemetry-test",
-        plug: {ReqTest, DeputyReqTestTelemetryStop}
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/telemetry-test",
+          plug: {ReqTest, DeputyReqTestTelemetryStop}
+        )
       )
 
       assert_receive {:telemetry_stop, [:deputy, :request, :stop], %{duration: _},
@@ -139,9 +162,11 @@ defmodule Deputy.HTTPClient.ReqTest do
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
       HTTPClientReq.request(
-        method: :get,
-        url: "https://test.deputy.com/api/telemetry-test",
-        plug: {ReqTest, DeputyReqTestTelemetryApiError}
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/telemetry-test",
+          plug: {ReqTest, DeputyReqTestTelemetryApiError}
+        )
       )
 
       assert_receive {:telemetry_stop, _, _, %{status: 404}}
@@ -160,11 +185,13 @@ defmodule Deputy.HTTPClient.ReqTest do
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
       HTTPClientReq.request(
-        method: :get,
-        url: "https://test.deputy.com/api/telemetry-test",
-        adapter: fn request ->
-          {request, RuntimeError.exception("connection refused")}
-        end
+        build_request(
+          method: :get,
+          url: "https://test.deputy.com/api/telemetry-test",
+          adapter: fn r ->
+            {r, RuntimeError.exception("connection refused")}
+          end
+        )
       )
 
       assert_receive {:telemetry_stop, _, _, %{status: :error}}
@@ -187,9 +214,11 @@ defmodule Deputy.HTTPClient.ReqTest do
 
       assert_raise RuntimeError, "boom", fn ->
         HTTPClientReq.request(
-          method: :get,
-          url: "https://test.deputy.com/api/telemetry-test",
-          adapter: fn _request -> raise "boom" end
+          build_request(
+            method: :get,
+            url: "https://test.deputy.com/api/telemetry-test",
+            adapter: fn _r -> raise "boom" end
+          )
         )
       end
 
@@ -220,9 +249,11 @@ defmodule Deputy.HTTPClient.ReqTest do
 
       assert catch_throw(
                HTTPClientReq.request(
-                 method: :get,
-                 url: "https://test.deputy.com/api/telemetry-test",
-                 adapter: fn _request -> throw(:bail) end
+                 build_request(
+                   method: :get,
+                   url: "https://test.deputy.com/api/telemetry-test",
+                   adapter: fn _r -> throw(:bail) end
+                 )
                )
              ) == :bail
 

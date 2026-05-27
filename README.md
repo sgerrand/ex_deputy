@@ -257,7 +257,7 @@ responses in your tests.
 
 ```elixir
 # In your test setup
-Mox.defmock(Deputy.HTTPClient.Mock, for: Deputy.HTTPClient.Behaviour)
+Mox.defmock(Deputy.HTTPClient.Mock, for: Deputy.HTTPClient)
 
 test "list employees success" do
   client = Deputy.new(
@@ -268,9 +268,9 @@ test "list employees success" do
 
   # Set up expectations for success
   Deputy.HTTPClient.Mock
-  |> expect(:request, fn opts ->
-    assert Keyword.get(opts, :method) == :get
-    assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v1/supervise/employee"
+  |> expect(:request, fn %Deputy.HTTPClient.Request{} = req ->
+    assert req.method == :get
+    assert req.url == "https://test.deputy.com/api/v1/supervise/employee"
 
     {:ok, [%{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}]}
   end)

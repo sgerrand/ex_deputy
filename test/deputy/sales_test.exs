@@ -37,10 +37,10 @@ defmodule Deputy.SalesTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v2/metrics"
-        assert Keyword.get(opts, :json) == metrics
+      |> expect(:request, fn req ->
+        assert req.method == :post
+        assert req.url == "https://test.deputy.com/api/v2/metrics"
+        assert req.body == metrics
 
         {:ok, response_body}
       end)
@@ -63,10 +63,10 @@ defmodule Deputy.SalesTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :get
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v2/metrics/raw"
-        assert Keyword.get(opts, :params) == params
+      |> expect(:request, fn req ->
+        assert req.method == :get
+        assert req.url == "https://test.deputy.com/api/v2/metrics/raw"
+        assert req.params == params
 
         {:ok, response_body}
       end)
@@ -81,9 +81,9 @@ defmodule Deputy.SalesTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :post
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v2/metrics"
+      |> expect(:request, fn req ->
+        assert req.method == :post
+        assert req.url == "https://test.deputy.com/api/v2/metrics"
         {:ok, response_body}
       end)
 
@@ -97,9 +97,9 @@ defmodule Deputy.SalesTest do
       response_body = [%{"timestamp" => 1_626_203_600, "type" => "Sales", "value" => 100.30}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :get
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/api/v2/metrics/raw"
+      |> expect(:request, fn req ->
+        assert req.method == :get
+        assert req.url == "https://test.deputy.com/api/v2/metrics/raw"
         {:ok, response_body}
       end)
 
@@ -110,7 +110,7 @@ defmodule Deputy.SalesTest do
   describe "error handling" do
     test "returns API error for 400 response", %{client: client} do
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error,
          Deputy.Error.from_response(%{status: 400, body: %{"message" => "Invalid metric data"}})}
       end)
@@ -121,7 +121,7 @@ defmodule Deputy.SalesTest do
 
     test "returns HTTP error for 500 response", %{client: client} do
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error, Deputy.Error.from_response(%{status: 500, body: "Internal Server Error"})}
       end)
 
@@ -131,7 +131,7 @@ defmodule Deputy.SalesTest do
 
     test "returns rate limit error for 429 response", %{client: client} do
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error, Deputy.Error.from_response(%{status: 429, body: %{"retry_after" => 60}})}
       end)
 

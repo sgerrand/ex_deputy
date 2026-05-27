@@ -89,11 +89,11 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :method) == :get
-        assert Keyword.get(opts, :url) == "https://test.deputy.com/test/path"
-        assert Keyword.get(opts, :headers) == [{"Authorization", "Bearer test-key"}]
-        assert Keyword.get(opts, :params) == %{query: "param"}
+      |> expect(:request, fn req ->
+        assert req.method == :get
+        assert req.url == "https://test.deputy.com/test/path"
+        assert req.headers == [{"Authorization", "Bearer test-key"}]
+        assert req.params == %{query: "param"}
 
         {:ok, %{"data" => "success"}}
       end)
@@ -112,7 +112,7 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn _opts ->
+      |> expect(:request, fn _req ->
         {:error, %{status: 404, body: %{"error" => "not found"}}}
       end)
 
@@ -132,9 +132,9 @@ defmodule DeputyTest do
       body = %{name: "Test Location", code: "TST"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
+      |> expect(:request, fn req ->
         # Verify the request body is included
-        assert Keyword.get(opts, :json) == body
+        assert req.body == body
 
         {:ok, %{"id" => 123}}
       end)
@@ -181,8 +181,8 @@ defmodule DeputyTest do
       body = [%{name: "item1"}, %{name: "item2"}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :json) == body
+      |> expect(:request, fn req ->
+        assert req.body == body
         {:ok, %{"id" => 123}}
       end)
 
@@ -198,8 +198,8 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :params) == [key: "value"]
+      |> expect(:request, fn req ->
+        assert req.params == [key: "value"]
         {:ok, []}
       end)
 
@@ -216,8 +216,8 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :headers) == [{"Authorization", "OAuth oauth-token"}]
+      |> expect(:request, fn req ->
+        assert req.headers == [{"Authorization", "OAuth oauth-token"}]
         {:ok, %{}}
       end)
 
@@ -233,8 +233,8 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :retry) == :safe_transient
+      |> expect(:request, fn req ->
+        assert req.retry == :safe_transient
         {:ok, %{}}
       end)
 
@@ -251,8 +251,8 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        refute Keyword.has_key?(opts, :retry)
+      |> expect(:request, fn req ->
+        assert is_nil(req.retry)
         {:ok, %{}}
       end)
 
@@ -269,8 +269,8 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn opts ->
-        assert Keyword.get(opts, :headers) == [{"dpauth", "perm-token"}]
+      |> expect(:request, fn req ->
+        assert req.headers == [{"dpauth", "perm-token"}]
         {:ok, %{}}
       end)
 
