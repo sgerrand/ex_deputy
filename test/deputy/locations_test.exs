@@ -26,10 +26,10 @@ defmodule Deputy.LocationsTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v1/resource/Company"
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v1/resource/Company"
+                             } ->
         {:ok, response_body}
       end)
 
@@ -45,9 +45,7 @@ defmodule Deputy.LocationsTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/simple"
 
@@ -64,9 +62,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"Id" => location_id, "CompanyName" => "Test Company"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/my/location/#{location_id}"
 
@@ -84,9 +80,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"WEEK_START" => 2, "CURRENCY" => "USD"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}/settings"
 
@@ -104,9 +98,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}/settings"
 
@@ -126,9 +118,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/all/settings"
 
@@ -155,9 +145,10 @@ defmodule Deputy.LocationsTest do
       response_body = %{"Id" => 123}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :put
-        assert req.url == "https://test.deputy.com/api/v1/resource/Company"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :put,
+                               url: "https://test.deputy.com/api/v1/resource/Company"
+                             } = req ->
         assert req.body == attrs
 
         {:ok, response_body}
@@ -174,9 +165,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}"
 
@@ -195,9 +184,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}/archive"
 
@@ -214,9 +201,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}/delete"
 
@@ -245,9 +230,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"Id" => 123}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/my/setup/addNewWorkplace"
 
@@ -265,9 +248,10 @@ defmodule Deputy.LocationsTest do
       response_body = [%{"Id" => 1, "CompanyName" => "Test Company"}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v1/resource/Company"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v1/resource/Company"
+                             } ->
         {:ok, response_body}
       end)
 
@@ -280,9 +264,7 @@ defmodule Deputy.LocationsTest do
       response_body = [%{"Id" => 1, "Name" => "Test Company"}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/simple"
 
@@ -299,9 +281,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"WEEK_START" => 2}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}/settings"
 
@@ -319,9 +299,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/#{location_id}/settings"
 
@@ -338,9 +316,7 @@ defmodule Deputy.LocationsTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/company/all/settings"
 

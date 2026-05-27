@@ -89,9 +89,10 @@ defmodule DeputyTest do
         )
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/test/path"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/test/path"
+                             } = req ->
         assert req.headers == [{"Authorization", "Bearer test-key"}]
         assert req.params == %{query: "param"}
 

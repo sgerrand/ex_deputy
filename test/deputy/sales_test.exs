@@ -37,9 +37,10 @@ defmodule Deputy.SalesTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-        assert req.url == "https://test.deputy.com/api/v2/metrics"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :post,
+                               url: "https://test.deputy.com/api/v2/metrics"
+                             } = req ->
         assert req.body == metrics
 
         {:ok, response_body}
@@ -63,9 +64,10 @@ defmodule Deputy.SalesTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v2/metrics/raw"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v2/metrics/raw"
+                             } = req ->
         assert req.params == params
 
         {:ok, response_body}
@@ -81,9 +83,10 @@ defmodule Deputy.SalesTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-        assert req.url == "https://test.deputy.com/api/v2/metrics"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :post,
+                               url: "https://test.deputy.com/api/v2/metrics"
+                             } ->
         {:ok, response_body}
       end)
 
@@ -97,9 +100,10 @@ defmodule Deputy.SalesTest do
       response_body = [%{"timestamp" => 1_626_203_600, "type" => "Sales", "value" => 100.30}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v2/metrics/raw"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v2/metrics/raw"
+                             } ->
         {:ok, response_body}
       end)
 

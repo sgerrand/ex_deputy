@@ -26,10 +26,10 @@ defmodule Deputy.RostersTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster"
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v1/supervise/roster"
+                             } ->
         {:ok, response_body}
       end)
 
@@ -43,9 +43,7 @@ defmodule Deputy.RostersTest do
       response_body = %{"Id" => roster_id, "StartTime" => "2023-01-01T09:00:00"}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/roster/#{roster_id}"
 
@@ -66,9 +64,10 @@ defmodule Deputy.RostersTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v1/supervise/roster"
+                             } = req ->
         assert req.params == %{date: date}
 
         {:ok, response_body}
@@ -89,9 +88,10 @@ defmodule Deputy.RostersTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v1/supervise/roster"
+                             } = req ->
         assert req.params == %{date: date, intCompanyId: location_id}
 
         {:ok, response_body}
@@ -114,9 +114,10 @@ defmodule Deputy.RostersTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster/copy"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :post,
+                               url: "https://test.deputy.com/api/v1/supervise/roster/copy"
+                             } = req ->
         assert req.body == attrs
 
         {:ok, response_body}
@@ -137,9 +138,7 @@ defmodule Deputy.RostersTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/roster/publish"
 
@@ -165,9 +164,10 @@ defmodule Deputy.RostersTest do
       response_body = %{"Id" => 123}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster/create"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :post,
+                               url: "https://test.deputy.com/api/v1/supervise/roster/create"
+                             } = req ->
         assert req.body == attrs
 
         {:ok, response_body}
@@ -201,9 +201,7 @@ defmodule Deputy.RostersTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :post
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/roster/discard"
 
@@ -224,9 +222,7 @@ defmodule Deputy.RostersTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/roster/autobuild"
 
@@ -247,9 +243,7 @@ defmodule Deputy.RostersTest do
       ]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
         assert req.url ==
                  "https://test.deputy.com/api/v1/supervise/getRecommendation/#{roster_id}"
 
@@ -265,9 +259,10 @@ defmodule Deputy.RostersTest do
       response_body = [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.method == :get
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :get,
+                               url: "https://test.deputy.com/api/v1/supervise/roster"
+                             } ->
         {:ok, response_body}
       end)
 
@@ -280,8 +275,9 @@ defmodule Deputy.RostersTest do
       response_body = %{"Id" => 1}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster/1"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               url: "https://test.deputy.com/api/v1/supervise/roster/1"
+                             } ->
         {:ok, response_body}
       end)
 
@@ -323,8 +319,9 @@ defmodule Deputy.RostersTest do
       response_body = %{"success" => true}
 
       Deputy.HTTPClient.Mock
-      |> expect(:request, fn req ->
-        assert req.url == "https://test.deputy.com/api/v1/supervise/roster/copy"
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               url: "https://test.deputy.com/api/v1/supervise/roster/copy"
+                             } ->
         {:ok, response_body}
       end)
 
