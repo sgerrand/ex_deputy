@@ -11,7 +11,6 @@ defmodule Deputy.MixProject do
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env()),
       test_coverage: [tool: ExCoveralls, test_task: "test"],
 
       # Hex
@@ -57,8 +56,6 @@ defmodule Deputy.MixProject do
       extras: ["README.md", "CHANGELOG.md", "LICENSE"]
     ]
   end
-
-  defp elixirc_paths(_), do: ["lib"]
 
   defp package do
     [
