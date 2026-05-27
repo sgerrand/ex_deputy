@@ -134,24 +134,22 @@ defmodule Deputy.Error do
       %Deputy.Error.HTTPError{reason: :timeout, status: nil, body: nil}
 
   """
+  @retry_after_keys ["retry_after", "retryAfter"]
+  @rate_limit_keys ["rate_limit", "rateLimit"]
+  @rate_remaining_keys ["rate_remaining", "rateRemaining"]
+
   @spec from_response(map()) :: t()
-  def from_response(%{status: 429, body: body, headers: headers}) do
+  def from_response(%{status: 429, body: body} = resp) do
+    headers = Map.get(resp, :headers)
+
     %RateLimitError{
-      retry_after: header_int(headers, "retry-after") || get_retry_after(body),
+      retry_after: header_int(headers, "retry-after") || body_int(body, @retry_after_keys),
       limit:
         header_int(headers, "x-ratelimit-limit") ||
-          header_int(headers, "x-rate-limit-limit") || get_rate_limit(body),
+          header_int(headers, "x-rate-limit-limit") || body_int(body, @rate_limit_keys),
       remaining:
         header_int(headers, "x-ratelimit-remaining") ||
-          header_int(headers, "x-rate-limit-remaining") || get_rate_remaining(body)
-    }
-  end
-
-  def from_response(%{status: 429, body: body}) do
-    %RateLimitError{
-      retry_after: get_retry_after(body),
-      limit: get_rate_limit(body),
-      remaining: get_rate_remaining(body)
+          header_int(headers, "x-rate-limit-remaining") || body_int(body, @rate_remaining_keys)
     }
   end
 
@@ -250,27 +248,14 @@ defmodule Deputy.Error do
 
   defp parse_int(_), do: nil
 
-  defp get_retry_after(body) do
-    case body do
-      %{"retry_after" => retry_after} when is_integer(retry_after) -> retry_after
-      %{"retryAfter" => retry_after} when is_integer(retry_after) -> retry_after
-      _ -> nil
-    end
+  defp body_int(body, keys) when is_map(body) do
+    Enum.find_value(keys, fn key ->
+      case Map.get(body, key) do
+        v when is_integer(v) -> v
+        _ -> nil
+      end
+    end)
   end
 
-  defp get_rate_limit(body) do
-    case body do
-      %{"rate_limit" => limit} when is_integer(limit) -> limit
-      %{"rateLimit" => limit} when is_integer(limit) -> limit
-      _ -> nil
-    end
-  end
-
-  defp get_rate_remaining(body) do
-    case body do
-      %{"rate_remaining" => remaining} when is_integer(remaining) -> remaining
-      %{"rateRemaining" => remaining} when is_integer(remaining) -> remaining
-      _ -> nil
-    end
-  end
+  defp body_int(_, _), do: nil
 end
