@@ -3,7 +3,7 @@ defmodule Deputy.My do
   Functions for interacting with endpoints related to the authenticated user.
   """
 
-  alias Deputy
+  alias Deputy.Validation
 
   @doc """
   Get information about the authenticated user.
@@ -137,7 +137,11 @@ defmodule Deputy.My do
   """
   @spec update_contact_address(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def update_contact_address(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/my/contactaddress", body: attrs)
+    required = [:ContactName, :Street1, :City, :State, :Postcode, :Country]
+
+    with :ok <- Validation.required_fields(attrs, required) do
+      Deputy.request(client, :post, "/api/v1/my/contactaddress", body: attrs)
+    end
   end
 
   @doc """

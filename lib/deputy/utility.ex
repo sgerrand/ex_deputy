@@ -3,7 +3,7 @@ defmodule Deputy.Utility do
   Utility functions for interacting with Deputy system features.
   """
 
-  alias Deputy
+  alias Deputy.Validation
 
   @doc """
   Retrieve current system time.
@@ -68,7 +68,11 @@ defmodule Deputy.Utility do
   """
   @spec create_memo(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def create_memo(client, attrs) do
-    Deputy.request(client, :put, "/api/v1/supervise/memo", body: attrs)
+    required = [:strContent, :intCompany, :blnRequireConfirm]
+
+    with :ok <- Validation.required_fields(attrs, required) do
+      Deputy.request(client, :put, "/api/v1/supervise/memo", body: attrs)
+    end
   end
 
   @doc """
@@ -101,7 +105,11 @@ defmodule Deputy.Utility do
   """
   @spec add_webhook(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
   def add_webhook(client, attrs) do
-    Deputy.request(client, :post, "/api/v1/resource/Webhook", body: attrs)
+    required = [:Topic, :Enabled, :Type, :Address]
+
+    with :ok <- Validation.required_fields(attrs, required) do
+      Deputy.request(client, :post, "/api/v1/resource/Webhook", body: attrs)
+    end
   end
 
   @doc """
