@@ -24,13 +24,13 @@ defmodule Deputy.Timesheets do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   intEmployeeId: 123,
-      ...>   intCompanyId: 456
-      ...> }
-      iex> Deputy.Timesheets.start(client, attrs)
-      {:ok, %{"Id" => 789}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        intEmployeeId: 123,
+        intCompanyId: 456
+      }
+      Deputy.Timesheets.start(client, attrs)
+      # => {:ok, %{"Id" => 789}}
 
   """
   @spec start(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -57,13 +57,13 @@ defmodule Deputy.Timesheets do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   intTimesheetId: 123,
-      ...>   intMealbreakMinute: 30
-      ...> }
-      iex> Deputy.Timesheets.stop(client, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        intTimesheetId: 123,
+        intMealbreakMinute: 30
+      }
+      Deputy.Timesheets.stop(client, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec stop(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -87,10 +87,10 @@ defmodule Deputy.Timesheets do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{intTimesheetId: 123}
-      iex> Deputy.Timesheets.pause(client, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{intTimesheetId: 123}
+      Deputy.Timesheets.pause(client, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec pause(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -110,9 +110,9 @@ defmodule Deputy.Timesheets do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Timesheets.get_details(client, 123)
-      {:ok, %{"Id" => 123, "StartTime" => "2023-01-01T09:00:00"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Timesheets.get_details(client, 123)
+      # => {:ok, %{"Id" => 123, "StartTime" => "2023-01-01T09:00:00"}}
 
   """
   @spec get_details(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -131,17 +131,17 @@ defmodule Deputy.Timesheets do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> query = %{
-      ...>   search: %{id: %{field: "Id", type: "eq", data: 1}},
-      ...>   join: ["TimesheetObject"]
-      ...> }
-      iex> Deputy.Timesheets.query(client, nil, query)
-      {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      query = %{
+        search: %{id: %{field: "Id", type: "eq", data: 1}},
+        join: ["TimesheetObject"]
+      }
+      Deputy.Timesheets.query(client, nil, query)
+      # => {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Timesheets.query(client, 1, nil)
-      {:ok, %{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Timesheets.query(client, 1, nil)
+      # => {:ok, %{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}}
 
   """
   @spec query(Deputy.t(), integer() | nil, map() | nil) ::

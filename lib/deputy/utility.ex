@@ -10,9 +10,9 @@ defmodule Deputy.Utility do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Utility.get_time(client)
-      {:ok, %{"time" => 1672531200, "tz" => "UTC"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Utility.get_time(client)
+      # => {:ok, %{"time" => 1672531200, "tz" => "UTC"}}
 
   """
   @spec get_time(Deputy.t()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -30,9 +30,9 @@ defmodule Deputy.Utility do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Utility.get_location_time(client, 1)
-      {:ok, %{"time" => 1672531200, "tz" => "America/New_York"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Utility.get_location_time(client, 1)
+      # => {:ok, %{"time" => 1672531200, "tz" => "America/New_York"}}
 
   """
   @spec get_location_time(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -56,14 +56,14 @@ defmodule Deputy.Utility do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   strContent: "Hello, this is a memo",
-      ...>   intCompany: 1,
-      ...>   blnRequireConfirm: 0
-      ...> }
-      iex> Deputy.Utility.create_memo(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        strContent: "Hello, this is a memo",
+        intCompany: 1,
+        blnRequireConfirm: 0
+      }
+      Deputy.Utility.create_memo(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec create_memo(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -88,15 +88,15 @@ defmodule Deputy.Utility do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   Topic: "Timesheet.Insert",
-      ...>   Enabled: 1,
-      ...>   Type: "URL",
-      ...>   Address: "https://example.com/webhook"
-      ...> }
-      iex> Deputy.Utility.add_webhook(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        Topic: "Timesheet.Insert",
+        Enabled: 1,
+        Type: "URL",
+        Address: "https://example.com/webhook"
+      }
+      Deputy.Utility.add_webhook(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec add_webhook(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -109,9 +109,9 @@ defmodule Deputy.Utility do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Utility.who_am_i(client)
-      {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Utility.who_am_i(client)
+      # => {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
 
   """
   @deprecated "Use Deputy.My.me/1 instead."
@@ -125,9 +125,9 @@ defmodule Deputy.Utility do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Utility.get_setup(client)
-      {:ok, %{"locations" => [%{"Id" => 1, "Name" => "Main Office"}]}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Utility.get_setup(client)
+      # => {:ok, %{"locations" => [%{"Id" => 1, "Name" => "Main Office"}]}}
 
   """
   @deprecated "Use Deputy.My.setup/1 instead."

@@ -26,22 +26,22 @@ defmodule Deputy.Sales do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> metrics = %{
-      ...>   data: [
-      ...>     %{
-      ...>       timestamp: 1660272300,
-      ...>       area: 2,
-      ...>       type: "Sales",
-      ...>       reference: "API-Sales-Entry-1660272300",
-      ...>       value: 100.30,
-      ...>       employee: 1,
-      ...>       location: 1
-      ...>     }
-      ...>   ]
-      ...> }
-      iex> Deputy.Sales.add_metrics(client, metrics)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      metrics = %{
+        data: [
+          %{
+            timestamp: 1660272300,
+            area: 2,
+            type: "Sales",
+            reference: "API-Sales-Entry-1660272300",
+            value: 100.30,
+            employee: 1,
+            location: 1
+          }
+        ]
+      }
+      Deputy.Sales.add_metrics(client, metrics)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec add_metrics(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -55,29 +55,34 @@ defmodule Deputy.Sales do
   ## Parameters
 
   - `client`: A Deputy client.
-  - `params`: A map containing query parameters.
+  - `params`: A map (or keyword list) of query parameters.
 
   ## Query parameters
 
-  - `areas`: Comma-separated list of area IDs.
-  - `types`: Comma-separated list of metric types (e.g., "Sales").
-  - `start`: Unix timestamp for the start date.
-  - `end`: Unix timestamp for the end date.
+  Every value must be a `String.t()` — the Deputy API rejects requests
+  where numeric IDs or timestamps are sent as JSON numbers rather than
+  serialised strings.
+
+  - `areas` (`String.t()`): Comma-separated list of area IDs, e.g. `"1,2,3"`.
+  - `types` (`String.t()`): Comma-separated list of metric types, e.g. `"Sales"` or `"Sales,Footfall"`.
+  - `start` (`String.t()`): Unix timestamp for the inclusive start of the window, e.g. `"1626203567"`.
+  - `end` (`String.t()`): Unix timestamp for the inclusive end of the window, e.g. `"1657775576"`.
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> params = %{
-      ...>   areas: "1",
-      ...>   types: "Sales",
-      ...>   start: "1626203567",
-      ...>   end: "1657775576"
-      ...> }
-      iex> Deputy.Sales.get_metrics(client, params)
-      {:ok, [%{"timestamp" => 1626203600, "area" => 1, "type" => "Sales", "value" => 100.30}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      params = %{
+        areas: "1",
+        types: "Sales",
+        start: "1626203567",
+        end: "1657775576"
+      }
+      Deputy.Sales.get_metrics(client, params)
+      # => {:ok, [%{"timestamp" => 1626203600, "area" => 1, "type" => "Sales", "value" => 100.30}]}
 
   """
-  @spec get_metrics(Deputy.t(), map()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
+  @spec get_metrics(Deputy.t(), %{optional(atom() | String.t()) => String.t()} | keyword()) ::
+          {:ok, list(map())} | {:error, Deputy.Error.t()}
   def get_metrics(client, params) do
     Deputy.request(client, :get, "/api/v2/metrics/raw", params: params)
   end

@@ -11,9 +11,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.list(client)
-      {:ok, [%{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.list(client)
+      # => {:ok, [%{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}]}
 
   """
   @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
@@ -31,9 +31,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.get(client, 1)
-      {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.get(client, 1)
+      # => {:ok, %{"Id" => 1, "FirstName" => "John", "LastName" => "Doe"}}
 
   """
   @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -64,19 +64,19 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   strFirstName: "John",
-      ...>   strLastName: "Doe",
-      ...>   intCompanyId: 1,
-      ...>   intGender: 1,
-      ...>   strCountryCode: "US",
-      ...>   strDob: "1980-01-01",
-      ...>   strStartDate: "2023-01-01",
-      ...>   strMobilePhone: "5551234567"
-      ...> }
-      iex> Deputy.Employees.create(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        strFirstName: "John",
+        strLastName: "Doe",
+        intCompanyId: 1,
+        intGender: 1,
+        strCountryCode: "US",
+        strDob: "1980-01-01",
+        strStartDate: "2023-01-01",
+        strMobilePhone: "5551234567"
+      }
+      Deputy.Employees.create(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -99,9 +99,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.update(client, 1, %{Phone: "5559876543"})
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.update(client, 1, %{Phone: "5559876543"})
+      # => {:ok, %{"success" => true}}
 
   """
   @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -120,9 +120,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.add_location(client, 1, 2)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.add_location(client, 1, 2)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec add_location(Deputy.t(), integer(), integer()) ::
@@ -142,9 +142,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.remove_location(client, 1, 2)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.remove_location(client, 1, 2)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec remove_location(Deputy.t(), integer(), integer()) ::
@@ -167,9 +167,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.terminate(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.terminate(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec terminate(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -187,9 +187,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.reactivate(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.reactivate(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec reactivate(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -207,9 +207,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.delete(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.delete(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -227,9 +227,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.invite(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.invite(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec invite(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -253,9 +253,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.set_award(client, 1, %{strCountryCode: "au", strAwardCode: "casual-2021-11-01-aea-2"})
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.set_award(client, 1, %{strCountryCode: "au", strAwardCode: "casual-2021-11-01-aea-2"})
+      # => {:ok, %{"success" => true}}
 
   """
   @spec set_award(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -275,9 +275,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.get_shift_info(client, 1)
-      {:ok, %{"Status" => "On Shift", "RosterID" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.get_shift_info(client, 1)
+      # => {:ok, %{"Status" => "On Shift", "RosterID" => 123}}
 
   """
   @spec get_shift_info(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -295,9 +295,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.get_leave(client, 1)
-      {:ok, [%{"Id" => 123, "DateStart" => "2023-01-01", "DateEnd" => "2023-01-05"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.get_leave(client, 1)
+      # => {:ok, [%{"Id" => 123, "DateStart" => "2023-01-01", "DateEnd" => "2023-01-05"}]}
 
   """
   @spec get_leave(Deputy.t(), integer()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
@@ -324,17 +324,17 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   Status: 1,
-      ...>   Employee: 1,
-      ...>   DateStart: "2023/01/01",
-      ...>   DateEnd: "2023/01/05",
-      ...>   ApprovalComment: "Vacation",
-      ...>   ActionOverlappingRosters: 0
-      ...> }
-      iex> Deputy.Employees.add_leave(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        Status: 1,
+        Employee: 1,
+        DateStart: "2023/01/01",
+        DateEnd: "2023/01/05",
+        ApprovalComment: "Vacation",
+        ActionOverlappingRosters: 0
+      }
+      Deputy.Employees.add_leave(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec add_leave(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -352,9 +352,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.get_unavailability(client, 1)
-      {:ok, [%{"Id" => 123, "Start" => %{"timestamp" => 1657001675}, "End" => %{"timestamp" => 1657001676}}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.get_unavailability(client, 1)
+      # => {:ok, [%{"Id" => 123, "Start" => %{"timestamp" => 1657001675}, "End" => %{"timestamp" => 1657001676}}]}
 
   """
   @spec get_unavailability(Deputy.t(), integer()) ::
@@ -381,16 +381,16 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   employee: 1,
-      ...>   start: %{timestamp: 1657001675},
-      ...>   end: %{timestamp: 1657001676},
-      ...>   strComment: "Weekly appointment",
-      ...>   recurrence: %{FREQ: "WEEKLY", INTERVAL: 1, BYDAY: "MO"}
-      ...> }
-      iex> Deputy.Employees.add_unavailability(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        employee: 1,
+        start: %{timestamp: 1657001675},
+        end: %{timestamp: 1657001676},
+        strComment: "Weekly appointment",
+        recurrence: %{FREQ: "WEEKLY", INTERVAL: 1, BYDAY: "MO"}
+      }
+      Deputy.Employees.add_unavailability(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec add_unavailability(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -413,9 +413,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.add_journal(client, %{strComment: "Employee performed well today", intEmployeeId: 1})
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.add_journal(client, %{strComment: "Employee performed well today", intEmployeeId: 1})
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec add_journal(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -433,9 +433,9 @@ defmodule Deputy.Employees do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Employees.get_agreed_hours(client, 1)
-      {:ok, %{"AgreedHours" => 40.0}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Employees.get_agreed_hours(client, 1)
+      # => {:ok, %{"AgreedHours" => 40.0}}
 
   """
   @spec get_agreed_hours(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}

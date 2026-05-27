@@ -26,15 +26,15 @@ defmodule Deputy.Departments do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   intCompanyId: 1,
-      ...>   strOpunitName: "Sales",
-      ...>   strAddress: "123 Main St",
-      ...>   intOpunitType: 1
-      ...> }
-      iex> Deputy.Departments.create(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        intCompanyId: 1,
+        strOpunitName: "Sales",
+        strAddress: "123 Main St",
+        intOpunitType: 1
+      }
+      Deputy.Departments.create(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -60,25 +60,25 @@ defmodule Deputy.Departments do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   arrArea: [
-      ...>     %{
-      ...>       intCompanyId: 1,
-      ...>       strOpunitName: "Sales",
-      ...>       strAddress: "123 Main St",
-      ...>       intOpunitType: 1
-      ...>     },
-      ...>     %{
-      ...>       intCompanyId: 1,
-      ...>       strOpunitName: "Marketing",
-      ...>       strAddress: "123 Main St",
-      ...>       intOpunitType: 1
-      ...>     }
-      ...>   ]
-      ...> }
-      iex> Deputy.Departments.create_multiple(client, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        arrArea: [
+          %{
+            intCompanyId: 1,
+            strOpunitName: "Sales",
+            strAddress: "123 Main St",
+            intOpunitType: 1
+          },
+          %{
+            intCompanyId: 1,
+            strOpunitName: "Marketing",
+            strAddress: "123 Main St",
+            intOpunitType: 1
+          }
+        ]
+      }
+      Deputy.Departments.create_multiple(client, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec create_multiple(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -93,9 +93,9 @@ defmodule Deputy.Departments do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Departments.list(client)
-      {:ok, [%{"Id" => 1, "OpunitName" => "Sales"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Departments.list(client)
+      # => {:ok, [%{"Id" => 1, "OpunitName" => "Sales"}]}
 
   """
   @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
@@ -113,9 +113,9 @@ defmodule Deputy.Departments do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Departments.delete(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Departments.delete(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -134,13 +134,13 @@ defmodule Deputy.Departments do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   intCompanyId: 12,
-      ...>   strOpunitName: "Updated Department Name"
-      ...> }
-      iex> Deputy.Departments.update(client, 20, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        intCompanyId: 12,
+        strOpunitName: "Updated Department Name"
+      }
+      Deputy.Departments.update(client, 20, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -158,14 +158,14 @@ defmodule Deputy.Departments do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> query = %{
-      ...>   join: [],
-      ...>   assoc: ["RosterEmployeeOperationalUnit"],
-      ...>   search: %{id: %{field: "Id", type: "eq", data: 1}}
-      ...> }
-      iex> Deputy.Departments.query(client, query)
-      {:ok, [%{"Id" => 1, "Employees" => [%{"Id" => 123, "FirstName" => "John"}]}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      query = %{
+        join: [],
+        assoc: ["RosterEmployeeOperationalUnit"],
+        search: %{id: %{field: "Id", type: "eq", data: 1}}
+      }
+      Deputy.Departments.query(client, query)
+      # => {:ok, [%{"Id" => 1, "Employees" => [%{"Id" => 123, "FirstName" => "John"}]}]}
 
   """
   @spec query(Deputy.t(), map()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}

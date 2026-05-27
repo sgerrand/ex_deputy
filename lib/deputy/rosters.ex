@@ -11,9 +11,9 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Rosters.list(client)
-      {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Rosters.list(client)
+      # => {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
   @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
@@ -31,9 +31,9 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Rosters.get(client, 1)
-      {:ok, %{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Rosters.get(client, 1)
+      # => {:ok, %{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}}
 
   """
   @spec get(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -51,9 +51,9 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Rosters.get_by_date(client, "2023-01-01")
-      {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Rosters.get_by_date(client, "2023-01-01")
+      # => {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
   @spec get_by_date(Deputy.t(), String.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
@@ -73,9 +73,9 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Rosters.get_by_date_and_location(client, "2023-01-01", 1)
-      {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00", "CompanyId" => 1}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Rosters.get_by_date_and_location(client, "2023-01-01", 1)
+      # => {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00", "CompanyId" => 1}]}
 
   """
   @spec get_by_date_and_location(Deputy.t(), String.t(), integer()) ::
@@ -102,15 +102,15 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   strFromDate: "2023-01-01",
-      ...>   strToDate: "2023-01-08",
-      ...>   intOperationalUnitArray: [1, 2],
-      ...>   blnRequireErrorDetails: 1
-      ...> }
-      iex> Deputy.Rosters.copy(client, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        strFromDate: "2023-01-01",
+        strToDate: "2023-01-08",
+        intOperationalUnitArray: [1, 2],
+        blnRequireErrorDetails: 1
+      }
+      Deputy.Rosters.copy(client, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec copy(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -134,14 +134,14 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   intMode: 1,
-      ...>   blnAllLocationsMode: 1,
-      ...>   intRosterArray: [400]
-      ...> }
-      iex> Deputy.Rosters.publish(client, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        intMode: 1,
+        blnAllLocationsMode: 1,
+        intRosterArray: [400]
+      }
+      Deputy.Rosters.publish(client, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec publish(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -159,16 +159,16 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   intEmployeeId: 1,
-      ...>   intOperationalUnitId: 2,
-      ...>   intCompanyId: 3,
-      ...>   dtmStartTime: "2023-01-01 09:00:00",
-      ...>   dtmEndTime: "2023-01-01 17:00:00"
-      ...> }
-      iex> Deputy.Rosters.create(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        intEmployeeId: 1,
+        intOperationalUnitId: 2,
+        intCompanyId: 3,
+        dtmStartTime: "2023-01-01 09:00:00",
+        dtmEndTime: "2023-01-01 17:00:00"
+      }
+      Deputy.Rosters.create(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -194,10 +194,10 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{intRosterArray: [400]}
-      iex> Deputy.Rosters.discard(client, attrs)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{intRosterArray: [400]}
+      Deputy.Rosters.discard(client, attrs)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec discard(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -210,9 +210,9 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Rosters.get_available_for_swap(client)
-      {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Rosters.get_available_for_swap(client)
+      # => {:ok, [%{"Id" => 1, "StartTime" => "2023-01-01T09:00:00"}]}
 
   """
   @spec get_available_for_swap(Deputy.t()) :: {:ok, list(map())} | {:error, Deputy.Error.t()}
@@ -230,9 +230,9 @@ defmodule Deputy.Rosters do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Rosters.get_recommendations(client, 1)
-      {:ok, [%{"EmployeeId" => 123, "Score" => 85}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Rosters.get_recommendations(client, 1)
+      # => {:ok, [%{"EmployeeId" => 123, "Score" => 85}]}
 
   """
   @spec get_recommendations(Deputy.t(), integer()) ::

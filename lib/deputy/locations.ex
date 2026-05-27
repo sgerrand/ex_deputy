@@ -11,22 +11,22 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.list(client)
-      {:ok, [%{"Id" => 1, "CompanyName" => "Test Company"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.list(client)
+      # => {:ok, [%{"Id" => 1, "CompanyName" => "Test Company"}]}
 
       # Using the bang version
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.list!(client)
-      [%{"Id" => 1, "CompanyName" => "Test Company"}]
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.list!(client)
+      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
 
       # Error handling
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> case Deputy.Locations.list(client) do
-      ...>   {:ok, locations} -> locations
-      ...>   {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
-      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      ...> end
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      case Deputy.Locations.list(client) do
+        {:ok, locations} -> locations
+        {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
+        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      end
   """
   @spec list(Deputy.t()) :: {:ok, list(map())} | {:error, Error.t()}
   def list(client) do
@@ -38,9 +38,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.list!(client)
-      [%{"Id" => 1, "CompanyName" => "Test Company"}]
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.list!(client)
+      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
   """
   @spec list!(Deputy.t()) :: list(map())
   def list!(client), do: client |> list() |> Deputy.unwrap!()
@@ -50,22 +50,22 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.list_simplified(client)
-      {:ok, [%{"Id" => 1, "CompanyName" => "Test Company"}]}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.list_simplified(client)
+      # => {:ok, [%{"Id" => 1, "CompanyName" => "Test Company"}]}
 
       # Using the bang version
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.list_simplified!(client)
-      [%{"Id" => 1, "CompanyName" => "Test Company"}]
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.list_simplified!(client)
+      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
 
       # Error handling
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> case Deputy.Locations.list_simplified(client) do
-      ...>   {:ok, locations} -> locations
-      ...>   {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
-      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      ...> end
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      case Deputy.Locations.list_simplified(client) do
+        {:ok, locations} -> locations
+        {:error, %Deputy.Error.APIError{status: 403}} -> "Permission denied"
+        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      end
   """
   @spec list_simplified(Deputy.t()) :: {:ok, list(map())} | {:error, Error.t()}
   def list_simplified(client) do
@@ -77,9 +77,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.list_simplified!(client)
-      [%{"Id" => 1, "CompanyName" => "Test Company"}]
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.list_simplified!(client)
+      # => [%{"Id" => 1, "CompanyName" => "Test Company"}]
   """
   @spec list_simplified!(Deputy.t()) :: list(map())
   def list_simplified!(client), do: client |> list_simplified() |> Deputy.unwrap!()
@@ -94,22 +94,22 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.get_settings(client, 1)
-      {:ok, %{"WEEK_START" => 1}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.get_settings(client, 1)
+      # => {:ok, %{"WEEK_START" => 1}}
 
       # Using the bang version
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.get_settings!(client, 1)
-      %{"WEEK_START" => 1}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.get_settings!(client, 1)
+      # => %{"WEEK_START" => 1}
 
       # Error handling
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> case Deputy.Locations.get_settings(client, 1) do
-      ...>   {:ok, settings} -> settings
-      ...>   {:error, %Deputy.Error.APIError{status: 404}} -> "Location not found"
-      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      ...> end
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      case Deputy.Locations.get_settings(client, 1) do
+        {:ok, settings} -> settings
+        {:error, %Deputy.Error.APIError{status: 404}} -> "Location not found"
+        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      end
   """
   @spec get_settings(Deputy.t(), integer()) :: {:ok, map()} | {:error, Error.t()}
   def get_settings(client, id) do
@@ -126,9 +126,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.get_settings!(client, 1)
-      %{"WEEK_START" => 1}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.get_settings!(client, 1)
+      # => %{"WEEK_START" => 1}
   """
   @spec get_settings!(Deputy.t(), integer()) :: map()
   def get_settings!(client, id), do: client |> get_settings(id) |> Deputy.unwrap!()
@@ -143,22 +143,22 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2})
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2})
+      # => {:ok, %{"success" => true}}
 
       # Using the bang version
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update_all_settings!(client, %{"WEEK_START" => 2})
-      %{"success" => true}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update_all_settings!(client, %{"WEEK_START" => 2})
+      # => %{"success" => true}
 
       # Error handling
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> case Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2}) do
-      ...>   {:ok, result} -> "Settings updated"
-      ...>   {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
-      ...>   {:error, %Deputy.Error.ValidationError{}} -> "Invalid settings data"
-      ...> end
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      case Deputy.Locations.update_all_settings(client, %{"WEEK_START" => 2}) do
+        {:ok, result} -> "Settings updated"
+        {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
+        {:error, %Deputy.Error.ValidationError{}} -> "Invalid settings data"
+      end
   """
   @spec update_all_settings(Deputy.t(), map()) :: {:ok, map()} | {:error, Error.t()}
   def update_all_settings(client, settings) do
@@ -175,9 +175,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update_all_settings!(client, %{"WEEK_START" => 2})
-      %{"success" => true}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update_all_settings!(client, %{"WEEK_START" => 2})
+      # => %{"success" => true}
   """
   @spec update_all_settings!(Deputy.t(), map()) :: map()
   def update_all_settings!(client, settings),
@@ -194,22 +194,22 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2})
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2})
+      # => {:ok, %{"success" => true}}
 
       # Using the bang version
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update_settings!(client, 1, %{"WEEK_START" => 2})
-      %{"success" => true}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update_settings!(client, 1, %{"WEEK_START" => 2})
+      # => %{"success" => true}
 
       # Error handling
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> case Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2}) do
-      ...>   {:ok, result} -> "Settings updated"
-      ...>   {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
-      ...>   {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
-      ...> end
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      case Deputy.Locations.update_settings(client, 1, %{"WEEK_START" => 2}) do
+        {:ok, result} -> "Settings updated"
+        {:error, %Deputy.Error.APIError{message: message}} -> "API error: " <> message
+        {:error, %Deputy.Error.HTTPError{reason: reason}} -> "HTTP error: " <> inspect(reason)
+      end
   """
   @spec update_settings(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Error.t()}
   def update_settings(client, id, settings) do
@@ -227,9 +227,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update_settings!(client, 1, %{"WEEK_START" => 2})
-      %{"success" => true}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update_settings!(client, 1, %{"WEEK_START" => 2})
+      # => %{"success" => true}
   """
   @spec update_settings!(Deputy.t(), integer(), map()) :: map()
   def update_settings!(client, id, settings),
@@ -245,9 +245,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.archive(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.archive(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec archive(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -265,9 +265,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.delete(client, 1)
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.delete(client, 1)
+      # => {:ok, %{"success" => true}}
 
   """
   @spec delete(Deputy.t(), integer()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -297,17 +297,17 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   strWorkplaceName: "New Location",
-      ...>   strWorkplaceCode: "NLC",
-      ...>   strAddress: "123 Test St",
-      ...>   intIsWorkplace: 1,
-      ...>   intIsPayrollEntity: 1,
-      ...>   strTimezone: "America/New_York"
-      ...> }
-      iex> Deputy.Locations.create(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        strWorkplaceName: "New Location",
+        strWorkplaceCode: "NLC",
+        strAddress: "123 Test St",
+        intIsWorkplace: 1,
+        intIsPayrollEntity: 1,
+        strTimezone: "America/New_York"
+      }
+      Deputy.Locations.create(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec create(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -326,9 +326,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.update(client, 1, %{strWorkplaceCode: "UPD"})
-      {:ok, %{"success" => true}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.update(client, 1, %{strWorkplaceCode: "UPD"})
+      # => {:ok, %{"success" => true}}
 
   """
   @spec update(Deputy.t(), integer(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -360,21 +360,21 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> attrs = %{
-      ...>   strWorkplaceName: "New Workplace",
-      ...>   strWorkplaceTimezone: "America/New_York",
-      ...>   strAddress: "123 Test St",
-      ...>   strLat: "40.7128",
-      ...>   strLon: "-74.0060",
-      ...>   intCountry: 1,
-      ...>   arrAreaNames: ["Reception", "Kitchen"],
-      ...>   strWorkplaceCode: "NWP",
-      ...>   blnIsWorkplace: 1,
-      ...>   blnIsPayrollEntity: 1
-      ...> }
-      iex> Deputy.Locations.create_workplace(client, attrs)
-      {:ok, %{"Id" => 123}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      attrs = %{
+        strWorkplaceName: "New Workplace",
+        strWorkplaceTimezone: "America/New_York",
+        strAddress: "123 Test St",
+        strLat: "40.7128",
+        strLon: "-74.0060",
+        intCountry: 1,
+        arrAreaNames: ["Reception", "Kitchen"],
+        strWorkplaceCode: "NWP",
+        blnIsWorkplace: 1,
+        blnIsPayrollEntity: 1
+      }
+      Deputy.Locations.create_workplace(client, attrs)
+      # => {:ok, %{"Id" => 123}}
 
   """
   @spec create_workplace(Deputy.t(), map()) :: {:ok, map()} | {:error, Deputy.Error.t()}
@@ -396,9 +396,9 @@ defmodule Deputy.Locations do
 
   ## Examples
 
-      iex> client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
-      iex> Deputy.Locations.get(client, 1)
-      {:ok, %{"Id" => 1, "CompanyName" => "Test Company"}}
+      client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
+      Deputy.Locations.get(client, 1)
+      # => {:ok, %{"Id" => 1, "CompanyName" => "Test Company"}}
 
   """
   @deprecated "Use Deputy.My.location/2 instead."
