@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Requirements
 
-- Elixir 1.19 / Erlang OTP 28.1 — managed via `asdf` (see `.tool-versions`)
+- Library supports Elixir `~> 1.15` (see `mix.exs`); CI exercises 1.15 → 1.19 across OTP 25 → 28.
+- Local development uses Elixir 1.19 / Erlang OTP 28.1, pinned via `asdf` in `.tool-versions`.
 
 ### Setup
 

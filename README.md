@@ -315,7 +315,8 @@ end
 
 ### Requirements
 
-- Elixir 1.19 / Erlang OTP 28.1 — managed via `asdf` (see `.tool-versions`)
+- Elixir `~> 1.15` is the supported floor (see `mix.exs`); CI covers 1.15 → 1.19 across OTP 25 → 28.
+- Local development pins Elixir 1.19 / Erlang OTP 28.1 via `asdf` (see `.tool-versions`).
 
 ### Setup
 
