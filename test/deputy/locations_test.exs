@@ -310,6 +310,129 @@ defmodule Deputy.LocationsTest do
     end
   end
 
+  describe "archive!/2" do
+    test "returns unwrapped archive result", %{client: client} do
+      location_id = 123
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
+        assert req.url ==
+                 "https://test.deputy.com/api/v1/supervise/company/#{location_id}/archive"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.archive!(client, location_id)
+    end
+  end
+
+  describe "delete!/2" do
+    test "returns unwrapped delete result", %{client: client} do
+      location_id = 123
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
+        assert req.url ==
+                 "https://test.deputy.com/api/v1/supervise/company/#{location_id}/delete"
+
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.delete!(client, location_id)
+    end
+  end
+
+  describe "create!/2" do
+    test "returns unwrapped create result", %{client: client} do
+      attrs = %{
+        strWorkplaceName: "New Location",
+        strWorkplaceCode: "NLC",
+        strAddress: "123 Test St",
+        intIsWorkplace: 1,
+        intIsPayrollEntity: 1,
+        strTimezone: "America/New_York"
+      }
+
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn %Deputy.HTTPClient.Request{
+                               method: :put,
+                               url: "https://test.deputy.com/api/v1/resource/Company"
+                             } = req ->
+        assert req.body == attrs
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.create!(client, attrs)
+    end
+  end
+
+  describe "update!/3" do
+    test "returns unwrapped update result", %{client: client} do
+      location_id = 123
+      attrs = %{strWorkplaceCode: "UPD"}
+      response_body = %{"success" => true}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
+        assert req.url ==
+                 "https://test.deputy.com/api/v1/supervise/company/#{location_id}"
+
+        assert req.body == attrs
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.update!(client, location_id, attrs)
+    end
+  end
+
+  describe "create_workplace!/2" do
+    test "returns unwrapped workplace result", %{client: client} do
+      attrs = %{
+        strWorkplaceName: "New Workplace",
+        strWorkplaceTimezone: "America/New_York",
+        strAddress: "123 Test St",
+        strLat: "40.7128",
+        strLon: "-74.0060",
+        intCountry: 1,
+        arrAreaNames: ["Reception", "Kitchen"],
+        strWorkplaceCode: "NWP",
+        blnIsWorkplace: 1,
+        blnIsPayrollEntity: 1
+      }
+
+      response_body = %{"Id" => 123}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :post} = req ->
+        assert req.url == "https://test.deputy.com/api/v1/my/setup/addNewWorkplace"
+        assert req.body == attrs
+        {:ok, response_body}
+      end)
+
+      assert ^response_body = Deputy.Locations.create_workplace!(client, attrs)
+    end
+  end
+
+  describe "get!/2" do
+    test "returns unwrapped location", %{client: client} do
+      location_id = 123
+      response_body = %{"Id" => location_id, "CompanyName" => "Test Company"}
+
+      Deputy.HTTPClient.Mock
+      |> expect(:request, fn %Deputy.HTTPClient.Request{method: :get} = req ->
+        assert req.url == "https://test.deputy.com/api/v1/my/location/#{location_id}"
+        {:ok, response_body}
+      end)
+
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
+      assert ^response_body = apply(Deputy.Locations, :get!, [client, location_id])
+    end
+  end
+
   describe "error handling" do
     test "returns API error for 404 response", %{client: client} do
       Deputy.HTTPClient.Mock

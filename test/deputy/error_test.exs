@@ -276,6 +276,38 @@ defmodule Deputy.ErrorTest do
       assert %RateLimitError{retry_after: 1, limit: 50, remaining: 5} = error
     end
 
+    test "ignores non-tuple entries in list headers" do
+      response = %{
+        status: 429,
+        body: %{"retry_after" => 60},
+        headers: [:not_a_tuple, {"retry-after", "5"}]
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{retry_after: 5} = error
+    end
+
+    test "ignores non-binary keys in map headers" do
+      response = %{
+        status: 429,
+        body: %{"retry_after" => 60},
+        headers: %{atom_key: "ignored"}
+      }
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{retry_after: 60} = error
+    end
+
+    test "returns nil rate-limit fields when body is not a map" do
+      response = %{status: 429, body: "Too Many Requests"}
+
+      error = Error.from_response(response)
+
+      assert %RateLimitError{retry_after: nil, limit: nil, remaining: nil} = error
+    end
+
     test "accepts X-Rate-Limit-* hyphenated variant" do
       response = %{
         status: 429,
