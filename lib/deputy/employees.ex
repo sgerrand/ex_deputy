@@ -68,7 +68,7 @@ defmodule Deputy.Employees do
         strFirstName: "John",
         strLastName: "Doe",
         intCompanyId: 1,
-        intGender: 1,
+        intGender: Deputy.Constants.Gender.male(),
         strCountryCode: "US",
         strDob: "1980-01-01",
         strStartDate: "2023-01-01",
@@ -325,7 +325,7 @@ defmodule Deputy.Employees do
 
       client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       attrs = %{
-        Status: 1,
+        Status: Deputy.Constants.LeaveStatus.approved(),
         Employee: 1,
         DateStart: "2023/01/01",
         DateEnd: "2023/01/05",

@@ -135,8 +135,8 @@ defmodule Deputy.Rosters do
 
       client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       attrs = %{
-        intMode: 1,
-        blnAllLocationsMode: 1,
+        intMode: Deputy.Constants.Roster.publish_mode_notify(),
+        blnAllLocationsMode: Deputy.Constants.Roster.all_locations(),
         intRosterArray: [400]
       }
       Deputy.Rosters.publish(client, attrs)

@@ -94,9 +94,9 @@ defmodule Deputy.Utility do
 
       client = Deputy.new(base_url: "https://test.deputy.com", api_key: "test-key")
       attrs = %{
-        Topic: "Timesheet.Insert",
+        Topic: Deputy.Constants.Webhook.topic_timesheet_insert(),
         Enabled: 1,
-        Type: "URL",
+        Type: Deputy.Constants.Webhook.type_url(),
         Address: "https://example.com/webhook"
       }
       Deputy.Utility.add_webhook(client, attrs)
