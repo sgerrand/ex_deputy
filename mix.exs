@@ -45,7 +45,7 @@ defmodule Deputy.MixProject do
 
   defp deps do
     [
-      {:req, "~> 0.5.0"},
+      {:req, "~> 0.6.1"},
       {:telemetry, "~> 1.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
