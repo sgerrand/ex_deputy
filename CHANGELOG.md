@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [Keep a
 CHANGELOG](http://keepachangelog.com/) for how to update this file. This project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.1](https://github.com/sgerrand/ex_deputy/compare/v0.5.0...v0.5.1) (2026-07-14)
+
+
+### Bug Fixes
+
+* **deps:** bump req from 0.5.17 to 0.6.1 ([#73](https://github.com/sgerrand/ex_deputy/issues/73)) ([ebe4920](https://github.com/sgerrand/ex_deputy/commit/ebe492084216d9868d220a580e44fe5fea7a3235))
+* **deps:** bump req from 0.6.1 to 0.6.2 ([#76](https://github.com/sgerrand/ex_deputy/issues/76)) ([f53db54](https://github.com/sgerrand/ex_deputy/commit/f53db54fece483605dd6495811c8eaa47c56cac7))
+
 ## [0.5.0](https://github.com/sgerrand/ex_deputy/compare/v0.4.1...v0.5.0) (2026-05-27)
 
 
