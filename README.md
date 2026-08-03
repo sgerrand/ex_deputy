@@ -18,7 +18,7 @@ This package can be installed by adding `deputy` to your list of dependencies in
 ```elixir
 def deps do
   [
-    {:deputy, "~> 0.5.1"}
+    {:deputy, "~> 0.5.2"}
   ]
 end
 ```
